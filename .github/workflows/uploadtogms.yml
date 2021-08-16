@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The new Addon Version in form of x.x.x'
+        required: true
+        default: ''
+      changelog:
+        description: 'The changelog for this version'
+        required: true
+        default: ''
+
+env:
+  BUILD_CONFIGURATION: Release
+
+jobs:
+  build_linux:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Copy CIFiles
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        cp -rf cifiles/linux32/* .
+
+    - name: Upload a Build Artifact - Minified
+      uses: actions/upload-artifact@v2.2.3
+      with:
+        name: "leyhitreg"
+        path: "leyhitreg.zip"
+
+  upload_builds_to_gms:
+    needs: [build_linux]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        path: .
+
+    - name: Copy it over
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        cp -rf leyhitreg/* .
+
+    - name: Upload
+      uses: JoshPiper/GModStore-Deployment@v0.6.2
+      with:
+        addon: 5340
+        token: ${{ secrets.GMS_token }}
+        version: ${{ github.event.inputs.version }}
+        changelog: ${{ github.event.inputs.changelog }}
+        path: leyhitreg.zip
+        type: private

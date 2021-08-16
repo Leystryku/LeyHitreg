@@ -1,0 +1,21 @@
+name: Linting
+
+on: [push]
+
+env:
+  BUILD_CONFIGURATION: Release
+
+jobs:
+  linting:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Linting
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        cp -rlf cifiles/linux32/* .
+        chmod +x glualint
+        ls
+        ./glualint --output-format github lint leyhitreg

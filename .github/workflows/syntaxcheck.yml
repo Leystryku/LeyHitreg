@@ -1,0 +1,20 @@
+name: Syntax Checking
+
+on: [push]
+
+env:
+  BUILD_CONFIGURATION: Release
+
+jobs:
+  syntaxchecking:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Syntax Checking
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: |
+        cp -rlf cifiles/linux32/* .
+        chmod +x gmodluacompiler
+        LD_LIBRARY_PATH=./ find "leyhitreg" -path "*/lua/*" -name "*.lua" -type f -exec ./gmodluacompiler {} {} "1" \;

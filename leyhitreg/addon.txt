@@ -1,0 +1,11 @@
+"AddonInfo"
+{
+	"name"				"LeyHitreg"
+	"version"			"1"
+	"up_date"			""
+	"author_name"			"Leystryku"
+	"author_email"			"Leystryku@gmail.com"
+	"author_url"			""
+	"info"				"A attempt at fixing the broken hit registration"
+	"override"			"0"
+}

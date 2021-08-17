@@ -1,5 +1,4 @@
 IN_LEYHITREG1 = bit.lshift(1, 27)
-IN_LEYHITREG2 = bit.lshift(1, 28)
 
 local inputIsMouseDown = input.IsMouseDown
 
@@ -8,7 +7,6 @@ function LeyHitreg:ShouldPrimaryAttack()
 end
 
 local IsValid = IsValid
-local CurTime = CurTime
 
 local lastPrim = nil
 
@@ -80,8 +78,6 @@ function LeyHitreg:CreateMove(cmd)
         cmd:SetButtons(bitbor(cmd:GetButtons(), IN_LEYHITREG1))
     end
 
-    -- self:SyncAttackData(true)
-
     trace.start = LocalPlayer():GetShootPos()
     trace.endpos = trace.start + (cmd:GetViewAngles():Forward() * (4096 * 8))
     util.TraceLine(trace)
@@ -105,46 +101,6 @@ function LeyHitreg:CreateMove(cmd)
     cmd:SetUpMove(target:EntIndex())
     cmd:SetMouseWheel(hitbone)
 end
-
-LeyHitreg.NextSendTime = 0
-LeyHitreg.SendFrequentlyUntil = 0
-
--- local NetKey = "{{ user_id sha256 fEWGWgi2352354fjsidgjsdag234 }}"
-
-function LeyHitreg:ShouldSyncAttackData(curTime, forceSync)
-    if (forceSync) then
-        self.SendFrequentlyUntil = curTime + 5
-        return true
-    end
-
-    if (self.SendFrequentlyUntil) then
-        if (self.SendFrequentlyUntil > curTime) then
-            return true
-        end
-
-        self.SendFrequentlyUntil = nil
-    end
-
-    if (self.NextSendTime > curTime) then
-        return false
-    end
-
-    self.NextSendTime = curTime + 0.4
-
-    return true
-end
-
-function LeyHitreg:SyncAttackData(forceSync)
-    local curTime = CurTime()
-
-    if (not self:ShouldSyncAttackData(curTime, forceSync)) then
-        return
-    end
-end
-
-timer.Create("LeyHitreg:SyncAttackData", 0.01, 0, function()
-    -- LeyHitreg:SyncAttackData(false)
-end)
 
 hook.Add("CreateMove", "LeyHitreg:CreateMove", function(...)
     LeyHitreg:CreateMove(...)

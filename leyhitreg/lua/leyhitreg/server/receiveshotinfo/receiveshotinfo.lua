@@ -1,5 +1,4 @@
 IN_LEYHITREG1 = bit.lshift(1, 27)
-IN_LEYHITREG2 = bit.lshift(1, 28)
 
 local meta = FindMetaTable("Player")
 meta.OldLagCompensation = meta.OldLagCompensation or meta.LagCompensation
@@ -15,7 +14,6 @@ end
 local Entity = Entity
 
 local PlyNeedsPrimReset = {}
-local PlyNeedsSecReset = {}
 
 LeyHitreg.BulletCount = {}
 
@@ -31,16 +29,14 @@ function LeyHitreg:StartCommand(ply, cmd)
     end
 
     local hasPrim = wep.CanPrimaryAttack and wep.PrimaryAttack
-    local hasSec = wep.CanSecondaryAttack and wep.SecondaryAttack
 
-    if (not hasPrim and not hasSec) then
+    if (not hasPrim) then
         return
     end
 
     local shouldPrimary = cmd:KeyDown(IN_LEYHITREG1)
-    local shouldSecondary = cmd:KeyDown(IN_LEYHITREG2)
 
-    if (not shouldPrimary and not shouldSecondary) then
+    if (not shouldPrimary) then
         return
     end
 
@@ -82,7 +78,6 @@ end)
 
 function LeyHitreg:PlayerSwitchWeapon(ply, oldWep, newWep)
     PlyNeedsPrimReset[ply] = nil
-    PlyNeedsSecReset[ply] = nil
 end
 
 hook.Add("PlayerSwitchWeapon", "LeyHitreg:PlayerSwitchWeapon", function(ply, oldWep, newWep)

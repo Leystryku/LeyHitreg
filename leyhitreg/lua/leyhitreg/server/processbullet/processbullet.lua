@@ -4,7 +4,6 @@ local toRemove = {}
 
 local CurTime = CurTime
 local tableremove = table.remove
-local tableinsert = table.insert
 
 function LeyHitreg:CleanHits(ply, wep, tbl)
     local needsRemove = false
@@ -16,7 +15,7 @@ function LeyHitreg:CleanHits(ply, wep, tbl)
         local target = v.target
 
         if (not IsValid(target) or target:Health() < 0 or curTime > v.expireTime or v.weapon != wep) then
-            tableinsert(toRemove, k)
+            toRemove[#toRemove + 1] = v
 
             if (not highestKey or k > highestKey) then
                 highestKey = k
@@ -50,14 +49,13 @@ function LeyHitreg:CanSeeEnt(ply, pos, target, targetpos)
     if (self.VisibilityCheckDisabled) then
         return true
     end
-/*
-
+    /*
     trace.filter = ply
     trace.start = ply:EyePos()
     trace.endpos = target:EyePos()
 
     util.TraceLine(trace)
-*/
+    */
     return ply:VisibleVec(target:GetPos())
 end
 
@@ -90,6 +88,7 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
     if (not shot) then
         return
     end
+
     tableremove(hitTable, 1)
     local target = shot.target
 
@@ -99,9 +98,10 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
         return
     end
 
-    -- print(canSee)
-
-    -- PrintTable(shot)
+    /*
+    print(canSee)
+    PrintTable(shot)
+    */
 
     local targetpos = target:GetBonePosition(shot.targetBone)
     if (not targetpos) then
@@ -112,7 +112,7 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
     local newdir = (targetpos - bullet.Src)
     bullet.Dir = newdir
     /*
-        ply.Bullets = (ply.Bullets or 0) + 1
+    ply.Bullets = (ply.Bullets or 0) + 1
     timer.Create(ply:SteamID64() .. "_plybullets_log", 1, 1, function()
         ply:ChatPrint("bullets hitregged: " .. tostring(ply.Bullets))
         ply.Bullets = 0
@@ -125,13 +125,14 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
 
     ply:SetEyeAngles(newdir:Angle())
     ply:ChatPrint("Target Bone: " .. tostring(shot.targetBone))
-*/
+    */
+
     return true
 end
 
 
 function LeyHitreg:InsertPlayerData(ply, cmd, wep, shouldPrimary, target, targetBone)
-    if (#self.ForceHit[ply] > 1000) then
+    if (#self.ForceHit[ply] > 500) then
         ply:Kick("[/LeyHitreg/] No Exploiting, little boy.")
         return
     end
@@ -152,17 +153,17 @@ end
 
 function LeyHitreg:ProcessBullet(ply, cmd, wep, shouldPrimary, target, targetBone)
     self.ForceHit[ply] = self.ForceHit[ply] or {}
-    if (not IsValid(target)) then
+
+    if (not IsValid(target) or target:Health() < 0) then
         return
     end
 
-    if (not IsValid(target) or wep.LeyHitregIgnore or (shouldPrimary and wep:Clip1() == 0) or (not shouldPrimary and wep:Clip2() == 0)) then
+    if (wep.LeyHitregIgnore or (shouldPrimary and wep:Clip1() == 0) or (not shouldPrimary and wep:Clip2() == 0)) then
         return
     end
 
     if (shouldPrimary and wep.CanPrimaryAttack and wep:CanPrimaryAttack()) then
         self:InsertPlayerData(ply, cmd, wep, shouldPrimary, target, targetBone)
-        -- wep:PrimaryAttack()
     end
 end
 

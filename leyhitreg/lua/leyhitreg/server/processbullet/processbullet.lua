@@ -45,7 +45,7 @@ local traceres = {}
 trace.filter = MASK_SHOT
 trace.output = traceres
 
-LeyHitreg.VisibilityCheckDisabled = true
+LeyHitreg.VisibilityCheckDisabled = false
 
 function LeyHitreg:CanSeeEnt(ply, pos, target, targetpos)
     if (self.VisibilityCheckDisabled) then
@@ -111,12 +111,12 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
     ply.LeyHitReg_ShouldHit = shot.targetHitGroup
 
     /*
-    ply:SetEyeAngles(newdir:Angle())
     ply.Bullets = (ply.Bullets or 0) + 1
     timer.Create(ply:SteamID64() .. "_plybullets_log", 1, 1, function()
         ply:ChatPrint("bullets hitregged: " .. tostring(ply.Bullets))
         ply.Bullets = 0
     end)
+    ply:SetEyeAngles(newdir:Angle())
 
     
     print(target:GetPos(), targetpos)
@@ -124,7 +124,7 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
     ply:ChatPrint("Target Bone: " .. tostring(shot.targetBone))
     */
 
-    -- return true
+    return true
 end
 
 function LeyHitreg:InsertPlayerData(ply, cmd, wep, shouldPrimary, target, targetBone, targetHitGroup)

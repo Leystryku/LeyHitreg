@@ -1,24 +1,24 @@
-function LeyHitreg:OriginalScaleDamage(ent, hitgroup, dmg)
+function LeyHitreg:OriginalScaleDamage(ent, hitgroup, dmg, orighitgroup)
 
     local atk = dmg:GetAttacker()
 
-    if (IsValid(atk) and atk.LeyHitReg_ShouldHit) then
-        -- local shouldHit = atk.LeyHitReg_ShouldHit
+    if (IsValid(atk) and orighitgroup) then
+        -- local shouldHit = hitgroup
         -- atk:ChatPrint("HITGROUP_HEAD: " .. tostring(hitgroup == HITGROUP_HEAD))
-        -- atk:ChatPrint(shouldHit .. "==" .. hitgroup)
+        -- atk:ChatPrint(shouldHit .. "==" .. orighitgroup)
         return
     end
 end
 
-hook.Add("ScalePlayerDamage", "LeyHitreg.DamageLog", function(ent, hitgroup, dmg)
-    local ret = LeyHitreg:OriginalScaleDamage(ent, hitgroup, dmg)
+hook.Add("ScalePlayerDamage", "LeyHitreg.DamageLog", function(ent, hitgroup, dmg, orighitgroup)
+    local ret = LeyHitreg:OriginalScaleDamage(ent, hitgroup, dmg, orighitgroup)
     if (ret != nil) then
         return ret
     end
 end)
 
-hook.Add("ScaleNPCDamage", "LeyHitreg.DamageLog", function(ent, hitgroup, dmg)
-    local ret = LeyHitreg:OriginalScaleDamage(ent, hitgroup, dmg)
+hook.Add("ScaleNPCDamage", "LeyHitreg.DamageLog", function(ent, hitgroup, dmg, orighitgroup)
+    local ret = LeyHitreg:OriginalScaleDamage(ent, hitgroup, dmg, orighitgroup)
     if (ret != nil) then
         return ret
     end
@@ -29,6 +29,7 @@ LeyHitreg.ScaleDamageNPCsHooks = {}
 
 function LeyHitreg:ScaleDamageCorrectly(target, hitgroup, dmg, targetisplayer)
     local atk = dmg:GetAttacker()
+    local orighitgroup = hitgroup
 
     if (IsValid(atk) and atk:IsPlayer()) then
         if (LeyHitreg.ScaleDamageBlockEntity[atk]) then
@@ -42,7 +43,7 @@ function LeyHitreg:ScaleDamageCorrectly(target, hitgroup, dmg, targetisplayer)
     local damageHooks = targetisplayer and self.ScaleDamagePlayersHooks or self.ScaleDamageNPCsHooks
 
     for k,v in pairs(damageHooks) do
-        local ret = v(target, hitgroup, dmg)
+        local ret = v(target, hitgroup, dmg, orighitgroup)
 
         if (ret != nil) then
             return ret
@@ -50,13 +51,13 @@ function LeyHitreg:ScaleDamageCorrectly(target, hitgroup, dmg, targetisplayer)
     end
 
     if (targetisplayer) then
-        local ret = GAMEMODE:OldScalePlayerDamage(target, hitgroup, dmg)
+        local ret = GAMEMODE:OldScalePlayerDamage(target, hitgroup, dmg, orighitgroup)
 
         if (ret != nil) then
             return ret
         end
     else
-        local ret = GAMEMODE:OldScaleNPCDamage(target, hitgroup, dmg)
+        local ret = GAMEMODE:OldScaleNPCDamage(target, hitgroup, dmg, orighitgroup)
 
         if (ret != nil) then
             return ret

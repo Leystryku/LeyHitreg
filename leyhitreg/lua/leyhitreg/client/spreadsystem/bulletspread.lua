@@ -3,6 +3,7 @@ local mathmodf = math.modf
 local mathrandomseed = math.randomseed
 local mathrandom = math.random
 local mathsqrt = math.sqrt
+local isnumber = isnumber
 local vector_origin = vector_origin
 
 -- yes, this spread system is only temporary
@@ -14,6 +15,10 @@ end
 function LeyHitreg:ApplyBulletSpread(ply, dir, spread)
     if (not spread or spread == vector_origin or LeyHitreg.NoSpread) then
         return false
+    end
+
+    if (isnumber(spread)) then
+        spread = Vector(spread, spread, 0)
     end
 
     local _, fractional = mathmodf(timefn())

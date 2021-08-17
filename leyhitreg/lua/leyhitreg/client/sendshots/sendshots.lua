@@ -148,7 +148,7 @@ function LeyHitreg:CreateMove(cmd)
 
     cmd:SetUpMove(target:EntIndex())
     cmd:SetMouseWheel(hitbone)
-    --LocalPlayer():ChatPrint("IS A HIT")
+    -- LocalPlayer():ChatPrint("IS A HIT")
 end
 
 hook.Add("CreateMove", "LeyHitreg:CreateMove", function(...)

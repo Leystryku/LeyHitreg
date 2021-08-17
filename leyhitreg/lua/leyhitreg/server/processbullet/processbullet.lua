@@ -40,27 +40,6 @@ function LeyHitreg:CleanHits(ply, wep, tbl)
     return tbl
 end
 
-local trace = {}
-local traceres = {}
-trace.filter = MASK_SHOT
-trace.output = traceres
-
-LeyHitreg.VisibilityCheckDisabled = false
-
-function LeyHitreg:CanSeeEnt(ply, pos, target, targetpos)
-    if (self.VisibilityCheckDisabled) then
-        return true
-    end
-    /*
-    trace.filter = ply
-    trace.start = ply:EyePos()
-    trace.endpos = target:EyePos()
-
-    util.TraceLine(trace)
-    */
-    return ply:VisibleVec(target:GetPos())
-end
-
 LeyHitreg.ScaleDamageBlockEntity = LeyHitreg.ScaleDamageBlockEntity or {}
 
 function LeyHitreg:EntityFireBullets(ply, bullet)
@@ -85,11 +64,6 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
     tableremove(hitTable, 1)
     local target = shot.target
 
-    local canSee, _ = self:CanSeeEnt(ply, shot.shootPos, target, targetPos)
-    if (not canSee) then
-        -- ply:ChatPrint("NOT VISIBLE: " .. tostring(canSeeEnt))
-        return
-    end
 
     /*
     print(canSee)
@@ -98,6 +72,7 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
     */
 
     local targetpos = target:GetBonePosition(shot.targetBone)
+
     if (not targetpos) then
         ply:ChatPrint("[/LeyHitreg/] Bone not found")
         return

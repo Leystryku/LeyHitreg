@@ -109,8 +109,10 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
         return
     end
 
+    bullet.Src = ply:GetShootPos()
     local newdir = (targetpos - bullet.Src)
     bullet.Dir = newdir
+
     /*
     ply.Bullets = (ply.Bullets or 0) + 1
     timer.Create(ply:SteamID64() .. "_plybullets_log", 1, 1, function()
@@ -173,4 +175,9 @@ hook.Add("EntityFireBullets", "LeyHitreg:EntityFireBullets", function(...)
     if (ret != nil) then
         return ret
     end
+end)
+
+hook.Add("ScaleNPCDamage","k", function(npc, hitgroup)
+    Entity(1):ChatPrint("HEADSHOT: " .. tostring(hitgroup == HITGROUP_HEAD))
+    Entity(1):ChatPrint(hitgroup)
 end)

@@ -22,10 +22,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Copy CIFiles
+    - name: Zip it Up
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        cp -rf cifiles/linux32/* .
+        zip -r leyhitreg.zip leyhitreg
 
     - name: Upload a Build Artifact - Minified
       uses: actions/upload-artifact@v2.2.3

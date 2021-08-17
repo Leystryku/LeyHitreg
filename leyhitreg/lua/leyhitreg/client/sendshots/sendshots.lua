@@ -137,6 +137,9 @@ function LeyHitreg:CreateMove(cmd)
     end
 
     trace.endpos = trace.start + (dir * (56756 * 8))
+    traceres.Entity = nil
+    traceres.HitGroup = nil
+    traceres.HitBox = nil
 
     util.TraceLine(trace)
 
@@ -144,6 +147,10 @@ function LeyHitreg:CreateMove(cmd)
 
     if (not IsValid(target)) then
         cmd:SetUpMove(-1)
+        if (LeyHitreg.AnnounceClientHits) then
+            LocalPlayer():ChatPrint("It's a miss!")
+            -- PrintTable(trace)
+        end
         return
     end
 

@@ -1,15 +1,14 @@
-IN_LEYHITREG1 = bit.lshift(1, 27)
 
+local IsValid = IsValid
 local inputIsMouseDown = input.IsMouseDown
+IN_LEYHITREG1 = bit.lshift(1, 27)
 
 function LeyHitreg:ShouldPrimaryAttack()
     return inputIsMouseDown(MOUSE_LEFT) or inputIsMouseDown(MOUSE_RIGHT)
 end
 
-local IsValid = IsValid
 
 local lastPrim = nil
-
 function LeyHitreg:CanShoot(cmd, wep, primary)
     local canShoot = true
 
@@ -33,10 +32,20 @@ trace.filter = LocalPlayer()
 trace.mask = MASK_SHOT
 trace.output = traceres
 
+local lply = nil
+
+timer.Create("LeyHitreg.LocalPlayerGet", 0.1, 0, function()
+    if (not lply and IsValid(LocalPlayer())) then
+        lply = LocalPlayer()
+        trace.filter = lply
+        timer.Remove("LeyHitreg.LocalPlayerGet")
+    end
+end)
+
 local NeedsPrimReset = false
 
 function LeyHitreg:CreateMove(cmd)
-    if (cmd:CommandNumber() == 0 or LeyHitreg.Disabled) then
+    if (cmd:CommandNumber() == 0 or LeyHitreg.Disabled or not lply) then
         return
     end
 
@@ -55,7 +64,7 @@ function LeyHitreg:CreateMove(cmd)
         return
     end
 
-    local wep = LocalPlayer():GetActiveWeapon()
+    local wep = lply:GetActiveWeapon()
 
     if (not IsValid(wep)) then
         return
@@ -79,7 +88,7 @@ function LeyHitreg:CreateMove(cmd)
         cmd:SetButtons(bitbor(cmd:GetButtons(), IN_LEYHITREG1))
     end
 
-    trace.start = LocalPlayer():GetShootPos()
+    trace.start = lply:GetShootPos()
     trace.endpos = trace.start + (cmd:GetViewAngles():Forward() * (4096 * 8))
     util.TraceLine(trace)
 
@@ -106,3 +115,4 @@ end
 hook.Add("CreateMove", "LeyHitreg:CreateMove", function(...)
     LeyHitreg:CreateMove(...)
 end)
+

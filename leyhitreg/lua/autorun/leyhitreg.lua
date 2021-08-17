@@ -9,6 +9,8 @@ LeyHitreg.Disabled = false
 LeyHitreg.svfiles = {
     "leyhitreg/server/receiveshotinfo/receiveshotinfo.lua",
     "leyhitreg/server/processbullet/processbullet.lua",
+    "leyhitreg/server/damageinfo/scaledamagehack.lua",
+    "leyhitreg/server/damageinfo/fixscaling.lua",
 }
 
 LeyHitreg.clfiles = {
@@ -17,7 +19,7 @@ LeyHitreg.clfiles = {
 
 local function includeOnCS(filename)
     if (SERVER) then
-        print("Uploading: " .. filename)
+        print("Sending to clients: " .. filename)
         AddCSLuaFile(filename)
     end
 

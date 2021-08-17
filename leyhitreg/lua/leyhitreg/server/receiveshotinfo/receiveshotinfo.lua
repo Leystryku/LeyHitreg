@@ -20,7 +20,7 @@ local PlyNeedsSecReset = {}
 LeyHitreg.BulletCount = {}
 
 function LeyHitreg:StartCommand(ply, cmd)
-    if (not ply:Alive()) then
+    if (not ply:Alive() or LeyHitreg.Disabled) then
         return
     end
 

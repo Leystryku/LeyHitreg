@@ -4,6 +4,7 @@ end
 
 print("[/LeyHitreg/] Loading...")
 LeyHitreg = LeyHitreg or {}
+LeyHitreg.Disabled = false
 
 LeyHitreg.svfiles = {
     "leyhitreg/server/receiveshotinfo/receiveshotinfo.lua",

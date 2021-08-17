@@ -4,18 +4,13 @@ IN_LEYHITREG2 = bit.lshift(1, 28)
 local inputIsMouseDown = input.IsMouseDown
 
 function LeyHitreg:ShouldPrimaryAttack()
-    return inputIsMouseDown(MOUSE_LEFT)
-end
-
-function LeyHitreg:ShouldSecondaryAttack()
-    return inputIsMouseDown(MOUSE_RIGHT)
+    return inputIsMouseDown(MOUSE_LEFT) or inputIsMouseDown(MOUSE_RIGHT)
 end
 
 local IsValid = IsValid
 local CurTime = CurTime
 
 local lastPrim = nil
-local lastSec = nil
 
 function LeyHitreg:CanShoot(cmd, primary, secondary)
     local wep = LocalPlayer():GetActiveWeapon()
@@ -24,22 +19,12 @@ function LeyHitreg:CanShoot(cmd, primary, secondary)
         return
     end
 
-    local curTime = CurTime()
     local canShoot = true
 
     local nextPrim = wep:GetNextPrimaryFire()
-    local nextSec = wep:GetNextSecondaryFire()
 
     if (primary) then
         if (nextPrim == lastPrim or wep:Clip1() == 0) then
-            canShoot = false
-        else
-            lastPrim = nextPrim
-        end
-    end
-
-    if (secondary) then
-        if (nextSec == lastSec or wep:Clip2() == 0) then
             canShoot = false
         else
             lastPrim = nextPrim
@@ -57,28 +42,22 @@ trace.mask = MASK_SHOT
 trace.output = traceres
 
 local NeedsPrimReset = false
-local NeedsSecReset = false
 
 function LeyHitreg:CreateMove(cmd)
-    if (cmd:CommandNumber() == 0) then
+    if (cmd:CommandNumber() == 0 or LeyHitreg.Disabled) then
         return
     end
 
     local cmdAttack1 = cmd:KeyDown(IN_ATTACK)
-    local cmdAttack2 = cmd:KeyDown(IN_ATTACK2)
 
-    if (not cmdAttack1 and not cmdAttack2) then
+    if (not cmdAttack1) then
         NeedsPrimReset = false
-        NeedsSecReset = false
         return
     elseif (NeedsPrimReset and not cmdAttack1) then
         NeedsPrimReset = false
-    elseif (NeedsSecReset and not cmdAttack2) then
-        NeedsSecReset = false
     end
 
     local shouldPrimary = self:ShouldPrimaryAttack()
-    local shouldSecondary = self:ShouldSecondaryAttack()
 
     if (not shouldPrimary and not shouldSecondary) then
         return
@@ -88,11 +67,8 @@ function LeyHitreg:CreateMove(cmd)
         return
     end
     local primAuto = wep.Primary and wep.Primary.Automatic
-    local secAuto = wep.Secondary and wep.Secondary.Automatic
 
     if (NeedsPrimReset and shouldPrimary) then
-        return
-    elseif (NeedsSecReset and shouldSecondary) then
         return
     end
 
@@ -100,16 +76,8 @@ function LeyHitreg:CreateMove(cmd)
         NeedsPrimReset = true
     end
 
-    if (not secAuto and shouldSecondary) then
-        NeedsSecReset = true
-    end
-
     if (shouldPrimary) then
         cmd:SetButtons(bitbor(cmd:GetButtons(), IN_LEYHITREG1))
-    end
-
-    if (shouldSecondary) then
-        cmd:SetButtons(bitbor(cmd:GetButtons(), IN_LEYHITREG2))
     end
 
     -- self:SyncAttackData(true)

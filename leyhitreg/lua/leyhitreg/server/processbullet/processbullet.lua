@@ -72,8 +72,6 @@ function meta:LagCompensation(...)
     return self:OldLagCompensation(...)
 end
 
-local tableremove = table.remove
-local shouldHit = nil
 function LeyHitreg:EntityFireBullets(ply, bullet)
     local wep = ply:GetActiveWeapon()
 
@@ -120,7 +118,7 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
         ply.Bullets = 0
     end)
 
-    shouldHit = shot.targetBone
+    ply.shouldHit = shot.targetBone
     bullet.Spread = Vector(0,0,0)
     
     print(target:GetPos(), targetpos)
@@ -152,13 +150,7 @@ function LeyHitreg:InsertPlayerData(ply, cmd, wep, shouldPrimary, target, target
     })
 end
 
-LeyHitreg.Disabled = false
-
 function LeyHitreg:ProcessBullet(ply, cmd, wep, shouldPrimary, target, targetBone)
-    if (self.Disabled) then
-        return
-    end
-
     self.ForceHit[ply] = self.ForceHit[ply] or {}
     if (not IsValid(target)) then
         return
@@ -171,11 +163,6 @@ function LeyHitreg:ProcessBullet(ply, cmd, wep, shouldPrimary, target, targetBon
     if (shouldPrimary and wep.CanPrimaryAttack and wep:CanPrimaryAttack()) then
         self:InsertPlayerData(ply, cmd, wep, shouldPrimary, target, targetBone)
         -- wep:PrimaryAttack()
-    end
-
-    if (not shouldPrimary and wep.CanSecondaryAttack and wep:CanSecondaryAttack()) then
-        self:InsertPlayerData(ply, cmd, wep, shouldPrimary, target, targetBone)
-        -- wep:SecondaryAttack()
     end
 end
 

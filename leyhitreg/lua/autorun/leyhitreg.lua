@@ -8,7 +8,7 @@ LeyHitreg = LeyHitreg or {}
 -- don't touch anything. no config. no, leave it. thanks.
 
 LeyHitreg.Disabled = false -- debug: disable addon
-LeyHitreg.NoSpread = false -- debug: enable nospread for everyone
+LeyHitreg.NoSpread = true -- debug: enable nospread for everyone
 LeyHitreg.BrokenDefaultSpread = false -- debug: enable broken default spread behaviour, broken because its only applied visually now
 LeyHitreg.LogHitgroupMismatches = false -- debug: log hitgroup mismatches
 LeyHitreg.LogFixedBullets = false -- debug: log the amount of bullets which got hitregged
@@ -69,4 +69,23 @@ end
 
 LeyHitreg:ProcessLuaFiles()
 
+function LeyHitreg:DisableMoatHitreg()
+    if (MOAT_HITREG) then
+        MOAT_HITREG.MaxPing = 1
+    end
+
+    if (ConVarExists("moat_alt_hitreg")) then
+        RunConsoleCommand("moat_alt_hitreg", "0")
+    end
+
+    if (SHR) then
+        if (SHR.Config) then
+            SHR.Config.Enabled = false
+            SHR.Config.ClientDefault = 0
+        end
+        hook.Remove("EntityFireBullets", "SHR.FireBullets")
+        hook.Remove("EntityFireBullets", "‍a")
+        net.Receivers["shr"] = function() end
+    end
+end
 print("[/LeyHitreg/] Loaded!")

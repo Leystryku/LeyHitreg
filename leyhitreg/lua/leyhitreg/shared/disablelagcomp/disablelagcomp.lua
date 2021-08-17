@@ -1,5 +1,3 @@
-LeyHitreg.DisableLagComp = false
-
 local meta = FindMetaTable("Player")
 meta.OldLagCompensation = meta.OldLagCompensation or meta.LagCompensation
 

@@ -15,6 +15,7 @@ LeyHitreg.LogFixedBullets = false -- debug: log the amount of bullets which got 
 LeyHitreg.BulletAimbot = false -- debug: set eyeangles to position of bullet
 LeyHitreg.LogTargetBone = false -- debug: log target bone
 LeyHitreg.AnnounceClientHits = false -- debug: log when the client sends a hit to server
+LeyHitreg.DisableLagComp = false -- debug: disable sources original lag compensation
 
 LeyHitreg.svfiles = {
     "leyhitreg/server/receiveshotinfo/receiveshotinfo.lua",

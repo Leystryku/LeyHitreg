@@ -176,8 +176,3 @@ hook.Add("EntityFireBullets", "LeyHitreg:EntityFireBullets", function(...)
         return ret
     end
 end)
-
-hook.Add("ScaleNPCDamage","k", function(npc, hitgroup)
-    Entity(1):ChatPrint("HEADSHOT: " .. tostring(hitgroup == HITGROUP_HEAD))
-    Entity(1):ChatPrint(hitgroup)
-end)

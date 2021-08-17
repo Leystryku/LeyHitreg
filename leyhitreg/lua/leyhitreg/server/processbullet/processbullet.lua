@@ -15,7 +15,7 @@ function LeyHitreg:CleanHits(ply, wep, tbl)
         local target = v.target
 
         if (not IsValid(target) or target:Health() < 0 or curTime > v.expireTime or v.weapon != wep) then
-            toRemove[#toRemove + 1] = v
+            toRemove[#toRemove + 1] = k
 
             if (not highestKey or k > highestKey) then
                 highestKey = k

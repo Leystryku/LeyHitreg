@@ -103,7 +103,7 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
 
     -- print(canSee)
 
-    PrintTable(shot)
+    -- PrintTable(shot)
 
     local targetpos = target:GetBonePosition(shot.targetBone)
     if (not targetpos) then

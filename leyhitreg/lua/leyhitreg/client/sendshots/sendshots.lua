@@ -109,7 +109,7 @@ end
 LeyHitreg.NextSendTime = 0
 LeyHitreg.SendFrequentlyUntil = 0
 
-local NetKey = "{{ user_id sha256 fEWGWgi2352354fjsidgjsdag234 }}"
+-- local NetKey = "{{ user_id sha256 fEWGWgi2352354fjsidgjsdag234 }}"
 
 function LeyHitreg:ShouldSyncAttackData(curTime, forceSync)
     if (forceSync) then

@@ -1,12 +1,13 @@
 
 local IsValid = IsValid
 local inputIsMouseDown = input.IsMouseDown
+local vector_origin = vector_origin
+
 IN_LEYHITREG1 = bit.lshift(1, 27)
 
 function LeyHitreg:ShouldPrimaryAttack()
     return inputIsMouseDown(MOUSE_LEFT) or inputIsMouseDown(MOUSE_RIGHT)
 end
-
 
 local lastPrim = nil
 function LeyHitreg:CanShoot(cmd, wep, primary)
@@ -40,6 +41,30 @@ timer.Create("LeyHitreg.LocalPlayerGet", 0.1, 0, function()
         trace.filter = lply
         timer.Remove("LeyHitreg.LocalPlayerGet")
     end
+end)
+
+local WeaponSpread = nil
+
+function LeyHitreg:PlayerSwitchWeapon(ply, oldWep, newWep)
+    if (ply != lply) then
+        return
+    end
+
+    WeaponSpread = nil
+
+    if (newWep.Primary and newWep.Primary.Cone) then
+        WeaponSpread = newWep.Primary.Cone
+    elseif (newWep.PrimaryCone) then
+        WeaponSpread = newWep.PrimaryCone
+    end
+
+    if (WeaponSpread == vector_origin) then
+        WeaponSpread = nil
+    end
+end
+
+hook.Add("PlayerSwitchWeapon", "LeyHitreg:PlayerSwitchWeapon", function(...)
+    LeyHitreg:PlayerSwitchWeapon(...)
 end)
 
 local NeedsPrimReset = false
@@ -89,7 +114,20 @@ function LeyHitreg:CreateMove(cmd)
     end
 
     trace.start = lply:GetShootPos()
-    trace.endpos = trace.start + (cmd:GetViewAngles():Forward() * (4096 * 8))
+    local dir = cmd:GetViewAngles():Forward()
+
+    if (WeaponSpread) then
+        local applied, newDir = self:ApplyBulletSpread(lply, cmd:GetViewAngles():Forward(), WeaponSpread)
+
+        if (applied) then
+            dir = newDir
+        end
+    end
+
+    -- print(trace.start, lply:GetShootPos())
+
+    trace.endpos = trace.start + (dir * (56756 * 8))
+
     util.TraceLine(trace)
 
     local target = traceres.Entity
@@ -110,9 +148,37 @@ function LeyHitreg:CreateMove(cmd)
 
     cmd:SetUpMove(target:EntIndex())
     cmd:SetMouseWheel(hitbone)
+    --LocalPlayer():ChatPrint("IS A HIT")
 end
 
 hook.Add("CreateMove", "LeyHitreg:CreateMove", function(...)
     LeyHitreg:CreateMove(...)
 end)
 
+
+function LeyHitreg:EntityFireBullets(ply, bullet)
+    if (LeyHitreg.Disabled) then
+        return
+    end
+
+    local appliedAny, newDir = self:ApplyBulletSpread(ply, bullet.Dir, WeaponSpread)
+    WeaponSpread = bullet.Spread
+    if (WeaponSpread == vector_origin) then
+        WeaponSpread = nil
+    end
+    if (not appliedAny) then
+        return
+    end
+
+    bullet.Spread = vector_origin
+    bullet.Dir = newDir
+    return true
+end
+
+hook.Add("EntityFireBullets", "LeyHitreg:EntityFireBullets", function(...)
+    local ret = LeyHitreg:EntityFireBullets(...)
+
+    if (ret != nil) then
+        return ret
+    end
+end)

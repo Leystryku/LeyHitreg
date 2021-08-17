@@ -61,17 +61,6 @@ function LeyHitreg:CanSeeEnt(ply, pos, target, targetpos)
     return ply:VisibleVec(target:GetPos())
 end
 
-local meta = FindMetaTable("Player")
-meta.OldLagCompensation = meta.OldLagCompensation or meta.LagCompensation
-
-function meta:LagCompensation(...)
-    if (not LeyHitreg.Disabled) then
-        return
-    end
-
-    return self:OldLagCompensation(...)
-end
-
 LeyHitreg.ScaleDamageBlockEntity = LeyHitreg.ScaleDamageBlockEntity or {}
 
 function LeyHitreg:EntityFireBullets(ply, bullet)
@@ -120,7 +109,6 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
     self.ScaleDamageBlockEntity[ply] = true
 
     ply.LeyHitReg_ShouldHit = shot.targetHitGroup
-    -- bullet.Spread = Vector(0,0,0)
 
     /*
     ply:SetEyeAngles(newdir:Angle())

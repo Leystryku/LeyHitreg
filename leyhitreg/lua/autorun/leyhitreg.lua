@@ -14,7 +14,12 @@ LeyHitreg.svfiles = {
 }
 
 LeyHitreg.clfiles = {
-    "leyhitreg/client/sendshots/sendshots.lua"
+    "leyhitreg/client/sendshots/sendshots.lua",
+    "leyhitreg/client/spreadsystem/bulletspread.lua"
+}
+
+LeyHitreg.sharedfiles = {
+    "leyhitreg/shared/disablelagcomp/disablelagcomp.lua"
 }
 
 local function includeOnCS(filename)
@@ -41,6 +46,11 @@ function LeyHitreg:ProcessLuaFiles()
     end
 
     for k,v in pairs(LeyHitreg.svfiles) do
+        includeOnSV(v)
+    end
+
+    for k,v in pairs(LeyHitreg.sharedfiles) do
+        includeOnCS(v)
         includeOnSV(v)
     end
 end

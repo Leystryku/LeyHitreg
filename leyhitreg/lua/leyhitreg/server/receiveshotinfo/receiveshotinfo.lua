@@ -1,16 +1,5 @@
 IN_LEYHITREG1 = bit.lshift(1, 27)
 
-local meta = FindMetaTable("Player")
-meta.OldLagCompensation = meta.OldLagCompensation or meta.LagCompensation
-
-function meta:LagCompensation(...)
-    if (not LeyHitreg.Disabled) then
-        return
-    end
-
-    return self:OldLagCompensation(...)
-end
-
 local Entity = Entity
 
 local PlyNeedsPrimReset = {}

@@ -52,13 +52,13 @@ function LeyHitreg:ScaleDamageCorrectly(target, hitgroup, dmg, targetisplayer)
     if (targetisplayer) then
         local ret = GAMEMODE:OldScalePlayerDamage(target, hitgroup, dmg)
 
-        if (ret) then
+        if (ret != nil) then
             return ret
         end
     else
         local ret = GAMEMODE:OldScaleNPCDamage(target, hitgroup, dmg)
 
-        if (ret) then
+        if (ret != nil) then
             return ret
         end
     end

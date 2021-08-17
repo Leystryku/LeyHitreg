@@ -10,13 +10,7 @@ local IsValid = IsValid
 
 local lastPrim = nil
 
-function LeyHitreg:CanShoot(cmd, primary, secondary)
-    local wep = LocalPlayer():GetActiveWeapon()
-
-    if (not IsValid(wep)) then
-        return
-    end
-
+function LeyHitreg:CanShoot(cmd, wep, primary)
     local canShoot = true
 
     local nextPrim = wep:GetNextPrimaryFire()
@@ -57,13 +51,20 @@ function LeyHitreg:CreateMove(cmd)
 
     local shouldPrimary = self:ShouldPrimaryAttack()
 
-    if (not shouldPrimary and not shouldSecondary) then
+    if (not shouldPrimary) then
         return
     end
 
-    if (not self:CanShoot(cmd, shouldPrimary, shouldSecondary)) then
+    local wep = LocalPlayer():GetActiveWeapon()
+
+    if (not IsValid(wep)) then
         return
     end
+
+    if (not self:CanShoot(cmd, wep, shouldPrimary)) then
+        return
+    end
+
     local primAuto = wep.Primary and wep.Primary.Automatic
 
     if (NeedsPrimReset and shouldPrimary) then

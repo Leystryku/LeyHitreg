@@ -6,8 +6,6 @@ local mathsqrt = math.sqrt
 local isnumber = isnumber
 local vector_origin = vector_origin
 
--- yes, this spread system is only temporary
-
 local timefn = function()
     return os.date("%S")
 end

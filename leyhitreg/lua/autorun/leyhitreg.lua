@@ -10,6 +10,11 @@ LeyHitreg = LeyHitreg or {}
 LeyHitreg.Disabled = false -- debug: disable addon
 LeyHitreg.NoSpread = false -- debug: enable nospread for everyone
 LeyHitreg.BrokenDefaultSpread = false -- debug: enable broken default spread behaviour, broken because its only applied visually now
+LeyHitreg.LogHitgroupMismatches = false -- debug: log hitgroup mismatches
+LeyHitreg.LogFixedBullets = false -- debug: log the amount of bullets which got hitregged
+LeyHitreg.BulletAimbot = false -- debug: set eyeangles to position of bullet
+LeyHitreg.LogTargetBone = false -- debug: log target bone
+LeyHitreg.AnnounceClientHits = false -- debug: log when the client sends a hit to server
 
 LeyHitreg.svfiles = {
     "leyhitreg/server/receiveshotinfo/receiveshotinfo.lua",

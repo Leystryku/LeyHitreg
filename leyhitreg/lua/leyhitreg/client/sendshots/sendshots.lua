@@ -136,8 +136,6 @@ function LeyHitreg:CreateMove(cmd)
         end
     end
 
-    -- print(trace.start, lply:GetShootPos())
-
     trace.endpos = trace.start + (dir * (56756 * 8))
 
     util.TraceLine(trace)
@@ -160,7 +158,10 @@ function LeyHitreg:CreateMove(cmd)
 
     cmd:SetUpMove(target:EntIndex())
     cmd:SetMouseWheel(hitbone)
-    -- LocalPlayer():ChatPrint("IS A HIT")
+
+    if (LeyHitreg.AnnounceClientHits) then
+        LocalPlayer():ChatPrint("It's a hit!")
+    end
 end
 
 hook.Add("CreateMove", "LeyHitreg:CreateMove", function(...)

@@ -84,19 +84,22 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
 
     ply.LeyHitReg_ShouldHit = shot.targetHitGroup
 
-    /*
-    ply.Bullets = (ply.Bullets or 0) + 1
-    timer.Create(ply:SteamID64() .. "_plybullets_log", 1, 1, function()
-        ply:ChatPrint("bullets hitregged: " .. tostring(ply.Bullets))
-        ply.Bullets = 0
-    end)
-    ply:SetEyeAngles(newdir:Angle())
+    if (LeyHitreg.LogFixedBullets) then
+        ply.LeyHitreg_Bullets = (ply.LeyHitreg_Bullets or 0) + 1
 
-    
-    print(target:GetPos(), targetpos)
+        timer.Create("LeyHitreg." .. ply:SteamID64() .. ".LogFixedBullets", 1, 1, function()
+            ply:ChatPrint("bullets hitregged: " .. tostring(ply.Bullets))
+            ply.Bullets = 0
+        end)
+    end
 
-    ply:ChatPrint("Target Bone: " .. tostring(shot.targetBone))
-    */
+    if (LeyHitreg.BulletAimbot) then
+        ply:SetEyeAngles(newdir:Angle())
+    end
+
+    if (LeyHitreg.LogTargetBone) then
+        ply:ChatPrint("Target Bone: " .. tostring(shot.targetBone))
+    end
 
     return true
 end

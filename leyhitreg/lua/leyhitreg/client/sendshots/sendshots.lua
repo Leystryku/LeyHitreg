@@ -67,6 +67,14 @@ hook.Add("PlayerSwitchWeapon", "LeyHitreg:PlayerSwitchWeapon", function(...)
     LeyHitreg:PlayerSwitchWeapon(...)
 end)
 
+function LeyHitreg:IsAutoWep(wep)
+    if (wep.Primary) then
+        return wep.Primary.Automatic
+    end
+
+    return true
+end
+
 local NeedsPrimReset = false
 
 function LeyHitreg:CreateMove(cmd)
@@ -99,7 +107,11 @@ function LeyHitreg:CreateMove(cmd)
         return
     end
 
-    local primAuto = wep.Primary and wep.Primary.Automatic
+    if (self:IsIgnoreWep(wep)) then
+        return
+    end
+
+    local primAuto = self:IsAutoWep(wep)
 
     if (NeedsPrimReset and shouldPrimary) then
         return
@@ -166,6 +178,7 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
     if (WeaponSpread == vector_origin) then
         WeaponSpread = nil
     end
+
     if (not appliedAny) then
         return
     end

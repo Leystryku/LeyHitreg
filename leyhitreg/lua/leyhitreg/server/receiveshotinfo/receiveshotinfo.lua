@@ -11,27 +11,25 @@ function LeyHitreg:StartCommand(ply, cmd)
         return
     end
 
-    local wep = ply:GetActiveWeapon()
-
-    if (not IsValid(wep)) then
-        return
-    end
-
-    local hasPrim = wep.CanPrimaryAttack and wep.PrimaryAttack
-
-    if (not hasPrim) then
-        return
-    end
-
     local shouldPrimary = cmd:KeyDown(IN_LEYHITREG1)
 
     if (not shouldPrimary) then
         return
     end
 
+    local wep = ply:GetActiveWeapon()
+
+    if (not IsValid(wep)) then
+        return
+    end
+
+    if (self:IsIgnoreWep(wep)) then
+        return
+    end
+
     LeyHitreg.BulletCount[ply] = (LeyHitreg.BulletCount[ply] or 0) + 1
 
-    if (LeyHitreg.BulletCount[ply] > 30) then
+    if (LeyHitreg.BulletCount[ply] > 50) then
         return
     end
 

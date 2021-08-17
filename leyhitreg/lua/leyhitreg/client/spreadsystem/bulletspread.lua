@@ -13,12 +13,16 @@ local timefn = function()
 end
 
 function LeyHitreg:ApplyBulletSpread(ply, dir, spread)
-    if (not spread or spread == vector_origin or LeyHitreg.NoSpread) then
+    if (not spread or spread == vector_origin or LeyHitreg.BrokenSpread) then
         return false
     end
 
+    if (LeyHitreg.NoSpread) then
+        return true, dir, vector_origin
+    end
+
     if (isnumber(spread)) then
-        spread = Vector(spread, spread, 0)
+        spread = Vector(spread, spread, spread)
     end
 
     local _, fractional = mathmodf(timefn())
@@ -26,7 +30,7 @@ function LeyHitreg:ApplyBulletSpread(ply, dir, spread)
 
     mathrandomseed(add + mathsqrt(dir.x ^ 2 * dir.y ^ 2 * dir.z ^ 2))
 
-    local appliedSpread = Vector(spread.x * (mathrandom() * 2 - 1), spread.y * (mathrandom() * 2 - 1), 0)
+    local appliedSpread = Vector(spread.x * (mathrandom() * 2 - 1), spread.y * (mathrandom() * 2 - 1), spread.z * (mathrandom() * 2 - 1))
     dir = dir + appliedSpread
 
     return true, dir, appliedSpread

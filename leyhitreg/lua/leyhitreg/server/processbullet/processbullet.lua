@@ -65,11 +65,10 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
     local target = shot.target
 
 
-    /*
-    print(canSee)
-    print(target) 
-    PrintTable(shot)
-    */
+
+    -- print(canSee)
+    -- print(target) 
+    -- PrintTable(shot)
 
     local targetpos = target:GetBonePosition(shot.targetBone)
 
@@ -123,6 +122,26 @@ function LeyHitreg:InsertPlayerData(ply, cmd, wep, shouldPrimary, target, target
     })
 end
 
+function LeyHitreg:CanPrimaryAttack(wep)
+    if (wep:Clip1() == 0) then
+        return false
+    end
+
+    if (wep.CanPrimaryAttack and not wep:CanPrimaryAttack()) then
+        return false
+    else
+        local nextPrim = wep:GetNextPrimaryFire()
+
+        if (wep.LastNextPrim and wep.LastNextPrim == nextPrim) then
+            return false
+        end
+
+        wep.LastNextPrim = nextPrim
+    end
+
+    return true
+end
+
 function LeyHitreg:ProcessBullet(ply, cmd, wep, shouldPrimary, target, targetBone)
     self.ForceHit[ply] = self.ForceHit[ply] or {}
 
@@ -130,11 +149,11 @@ function LeyHitreg:ProcessBullet(ply, cmd, wep, shouldPrimary, target, targetBon
         return
     end
 
-    if (wep.LeyHitregIgnore or (shouldPrimary and wep:Clip1() == 0) or (not shouldPrimary and wep:Clip2() == 0)) then
+    if (wep.LeyHitregIgnore) then
         return
     end
 
-    if (shouldPrimary and wep.CanPrimaryAttack and wep:CanPrimaryAttack()) then
+    if (shouldPrimary and self:CanPrimaryAttack(wep)) then
         local targetHitGroup = HITGROUP_GENERIC
 
         local hitboxsets = target.GetHitBoxSetCount and target:GetHitBoxSetCount() or 1
@@ -148,6 +167,11 @@ function LeyHitreg:ProcessBullet(ply, cmd, wep, shouldPrimary, target, targetBon
                     targetHitGroup = target:GetHitBoxHitGroup(hitbox, hitboxset)
                 end
             end
+        end
+
+        local hookRet = hook.Call("LeyHitreg:ProcessBullet", nil, ply, cmd, wep, shouldPrimary, target, targetBone, targetHitGroup)
+        if (hookRet == false) then
+            return
         end
 
         self:InsertPlayerData(ply, cmd, wep, shouldPrimary, target, targetBone, targetHitGroup)

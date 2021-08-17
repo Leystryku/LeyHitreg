@@ -1,13 +1,12 @@
 function LeyHitreg:OriginalScaleDamage(ent, hitgroup, dmg, orighitgroup)
+    /*local atk = dmg:GetAttacker()
 
-    local atk = dmg:GetAttacker()
-
-    if (IsValid(atk) and orighitgroup) then
-        -- local shouldHit = hitgroup
-        -- atk:ChatPrint("HITGROUP_HEAD: " .. tostring(hitgroup == HITGROUP_HEAD))
-        -- atk:ChatPrint(shouldHit .. "==" .. orighitgroup)
+    if (IsValid(atk) and orighitgroup and atk.IsPlayer and atk:IsPlayer()) then
+        local shouldHit = hitgroup
+        atk:ChatPrint("HITGROUP_HEAD: " .. tostring(hitgroup == HITGROUP_HEAD))
+        atk:ChatPrint(shouldHit .. "==" .. orighitgroup)
         return
-    end
+    end*/
 end
 
 hook.Add("ScalePlayerDamage", "LeyHitreg.DamageLog", function(ent, hitgroup, dmg, orighitgroup)

@@ -4,7 +4,12 @@ end
 
 print("[/LeyHitreg/] Loading...")
 LeyHitreg = LeyHitreg or {}
-LeyHitreg.Disabled = false
+
+-- don't touch anything. no config. no, leave it. thanks.
+
+LeyHitreg.Disabled = false -- debug: disable addon
+LeyHitreg.NoSpread = false -- debug: enable nospread for everyone
+LeyHitreg.BrokenDefaultSpread = false -- debug: enable broken default spread behaviour, broken because its only applied visually now
 
 LeyHitreg.svfiles = {
     "leyhitreg/server/receiveshotinfo/receiveshotinfo.lua",
@@ -19,7 +24,8 @@ LeyHitreg.clfiles = {
 }
 
 LeyHitreg.sharedfiles = {
-    "leyhitreg/shared/disablelagcomp/disablelagcomp.lua"
+    "leyhitreg/shared/disablelagcomp/disablelagcomp.lua",
+    "leyhitreg/shared/workarounds/workarounds.lua"
 }
 
 local function includeOnCS(filename)

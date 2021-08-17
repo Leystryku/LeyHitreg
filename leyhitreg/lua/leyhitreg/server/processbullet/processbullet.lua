@@ -88,8 +88,8 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
         ply.LeyHitreg_Bullets = (ply.LeyHitreg_Bullets or 0) + 1
 
         timer.Create("LeyHitreg." .. ply:SteamID64() .. ".LogFixedBullets", 1, 1, function()
-            ply:ChatPrint("bullets hitregged: " .. tostring(ply.Bullets))
-            ply.Bullets = 0
+            ply:ChatPrint("bullets hitregged: " .. tostring(ply.LeyHitreg_Bullets))
+            ply.LeyHitreg_Bullets = 0
         end)
     end
 

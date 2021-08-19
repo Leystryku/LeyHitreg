@@ -148,7 +148,7 @@ end
 function LeyHitreg:ProcessBullet(ply, cmd, wep, shouldPrimary, target, targetBone)
     self.ForceHit[ply] = self.ForceHit[ply] or {}
 
-    if (not IsValid(target) or target:Health() < 0) then
+    if (target:Health() < 0) then
         return
     end
 

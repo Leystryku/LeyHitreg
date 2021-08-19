@@ -1,6 +1,7 @@
 IN_LEYHITREG1 = bit.lshift(1, 27)
 
 local Entity = Entity
+local IsValid = IsValid
 
 local PlyNeedsPrimReset = {}
 
@@ -38,6 +39,10 @@ function LeyHitreg:StartCommand(ply, cmd)
 
     if (targetEntIndex and targetEntIndex > 0) then
         target = Entity(targetEntIndex)
+
+        if (not IsValid(target) or not (target:IsNPC() or target:IsPlayer())) then
+            target = nil
+        end
     else
         targetEntIndex = 0
     end

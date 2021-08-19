@@ -36,7 +36,7 @@ function LeyHitreg:StartCommand(ply, cmd)
     local targetEntIndex = cmd:GetUpMove()
     local target
 
-    if (targetEntIndex and targetEntIndex != 0) then
+    if (targetEntIndex and targetEntIndex > 0) then
         target = Entity(targetEntIndex)
     else
         targetEntIndex = 0

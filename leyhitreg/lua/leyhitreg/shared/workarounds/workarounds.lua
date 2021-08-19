@@ -18,6 +18,13 @@ function LeyHitreg:IsIgnoreWep(wep)
         return true
     end
 
+    -- This gets rid of all melees, but might  also get rid of some non-melees with inf ammo
+    -- maybe even some limited action melees
+    -- but, gonna fix conflicts as they arise
+    if (wep.IsMelee or wep.Melee or wep:Clip1() < 0) then
+        return true
+    end
+
     return false
 end
 

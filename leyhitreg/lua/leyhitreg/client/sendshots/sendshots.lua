@@ -103,11 +103,11 @@ function LeyHitreg:CreateMove(cmd)
         return
     end
 
-    if (not self:CanShoot(cmd, wep, shouldPrimary)) then
+    if (self:IsIgnoreWep(wep)) then
         return
     end
 
-    if (self:IsIgnoreWep(wep)) then
+    if (not self:CanShoot(cmd, wep, shouldPrimary)) then
         return
     end
 
@@ -145,7 +145,7 @@ function LeyHitreg:CreateMove(cmd)
 
     local target = traceres.Entity
 
-    if (not IsValid(target)) then
+    if (not IsValid(target) or not (target:IsNPC() or target:IsPlayer())) then
         cmd:SetUpMove(-1)
         if (LeyHitreg.AnnounceClientHits) then
             LocalPlayer():ChatPrint("It's a miss!")

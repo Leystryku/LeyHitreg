@@ -136,7 +136,7 @@ function LeyHitreg:CreateMove(cmd)
 
     util.TraceLine(trace)
 
-    local target = traceres.Entity
+    local target = traceres.Entity 
 
     if (not IsValid(target) or not (target:IsNPC() or target:IsPlayer())) then
         cmd:SetUpMove(-1)

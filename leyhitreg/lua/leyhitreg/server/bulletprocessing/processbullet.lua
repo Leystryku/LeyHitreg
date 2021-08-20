@@ -62,13 +62,13 @@ function LeyHitreg:EntityFireBullets(plyorwep, bullet)
     local hitTable = LeyHitreg.ForceHit[ply]
 
     if (not hitTable) then
-        return
+        return self:FallbackEntityFireBullets(ply, wep, bullet)
     end
 
     local shot = self:CleanHits(ply, wep, hitTable)[1]
 
     if (not shot) then
-        return
+        return self:FallbackEntityFireBullets(ply, wep, bullet)
     end
 
     tableremove(hitTable, 1)
@@ -84,7 +84,7 @@ function LeyHitreg:EntityFireBullets(plyorwep, bullet)
 
     if (not targetpos) then
         ply:ChatPrint("[/LeyHitreg/] Bone not found")
-        return
+        return self:FallbackEntityFireBullets(ply, wep, bullet)
     end
 
     local newshootpos = ply:GetShootPos()

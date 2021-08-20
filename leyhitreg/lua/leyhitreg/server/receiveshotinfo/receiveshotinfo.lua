@@ -39,7 +39,7 @@ function LeyHitreg:StartCommand(ply, cmd)
         return
     end
 
-    if (LeyHitreg.BulletCount[ply] > 50) then
+    if ((LeyHitreg.BulletCount[ply] or 0) > 50) then
         return
     end
 

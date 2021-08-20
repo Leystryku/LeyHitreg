@@ -8,7 +8,7 @@ LeyHitreg = LeyHitreg or {}
 -- don't touch anything. no config. no, leave it. thanks.
 
 LeyHitreg.Disabled = false -- debug: disable addon
-LeyHitreg.NoSpread = false -- debug: enable nospread for everyone
+LeyHitreg.NoSpread = true -- debug: enable nospread for everyone
 LeyHitreg.BrokenDefaultSpread = false -- debug: enable broken default spread behaviour, broken because its only applied visually now
 LeyHitreg.LogHitgroupMismatches = false -- debug: log hitgroup mismatches
 LeyHitreg.LogFixedBullets = false -- debug: log the amount of bullets which got hitregged

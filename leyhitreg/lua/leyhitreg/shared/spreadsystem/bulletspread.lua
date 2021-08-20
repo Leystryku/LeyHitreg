@@ -23,12 +23,14 @@ function LeyHitreg:ApplyBulletSpread(ply, dir, spread)
         spread = Vector(spread, spread, spread)
     end
 
-    local _, fractional = mathmodf(timefn())
-    local add = (8969 * fractional)
+    local add = (8969 * timefn())
+    
+    mathrandomseed(add)
 
-    mathrandomseed(add + mathsqrt(dir.x ^ 2 * dir.y ^ 2 * dir.z ^ 2))
+    local rnda, rndb, rndc = mathrandom(), mathrandom(), mathrandom()
 
-    local appliedSpread = Vector(spread.x * (mathrandom() * 2 - 1), spread.y * (mathrandom() * 2 - 1), spread.z * (mathrandom() * 2 - 1))
+
+    local appliedSpread = Vector(spread.x * (rnda * 2 - 1), spread.y * (rndb * 2 - 1), spread.z * (rndc * 2 - 1))
     dir = dir + appliedSpread
 
     return true, dir, appliedSpread

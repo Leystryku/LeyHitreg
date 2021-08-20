@@ -42,10 +42,20 @@ end
 
 LeyHitreg.ScaleDamageBlockEntity = LeyHitreg.ScaleDamageBlockEntity or {}
 
-function LeyHitreg:EntityFireBullets(ply, bullet)
-    local wep = ply:GetActiveWeapon()
+local spread = vector_origin
 
-    if (not IsValid(wep)) then
+function LeyHitreg:FallbackEntityFireBullets(ply, wep, bullet)
+    local ret = LeyHitreg:SpreadedEntityFireBullets(ply, wep, bullet)
+
+    if (ret != nil) then
+        return ret
+    end
+end
+
+function LeyHitreg:EntityFireBullets(plyorwep, bullet)
+    local ply, wep = self:GetPlayerFromPlyOrBullet(plyorwep, bullet)
+
+    if (not ply) then
         return
     end
 
@@ -84,7 +94,7 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
 
     bullet.Src = newshootpos
     bullet.Dir = newdir
-
+    bullet.Spread = vector_origin
 
     self.ScaleDamageBlockEntity[ply] = true
 

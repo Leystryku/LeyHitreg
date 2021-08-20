@@ -43,29 +43,7 @@ timer.Create("LeyHitreg.LocalPlayerGet", 0.1, 0, function()
     end
 end)
 
-local WeaponSpread = nil
-
-function LeyHitreg:PlayerSwitchWeapon(ply, oldWep, newWep)
-    if (ply != lply) then
-        return
-    end
-
-    WeaponSpread = nil
-
-    if (newWep.Primary and newWep.Primary.Cone) then
-        WeaponSpread = newWep.Primary.Cone
-    elseif (newWep.PrimaryCone) then
-        WeaponSpread = newWep.PrimaryCone
-    end
-
-    if (WeaponSpread == vector_origin) then
-        WeaponSpread = nil
-    end
-end
-
-hook.Add("PlayerSwitchWeapon", "LeyHitreg:PlayerSwitchWeapon", function(...)
-    LeyHitreg:PlayerSwitchWeapon(...)
-end)
+LeyHitreg.WeaponSpreads = {}
 
 function LeyHitreg:IsAutoWep(wep)
     if (wep.Primary) then
@@ -78,7 +56,17 @@ end
 local NeedsPrimReset = false
 
 function LeyHitreg:CreateMove(cmd)
-    if (cmd:CommandNumber() == 0 or LeyHitreg.Disabled or not lply) then
+    if (not lply or LeyHitreg.Disabled) then
+        return
+    end
+
+    local spreadWep = lply.LeyHitreg_NeedsSpreadForce
+
+    if (spreadWep and IsValid(spreadWep)) then
+        spreadWep:SetClip1(99999)
+    end
+
+    if (cmd:CommandNumber() == 0) then
         return
     end
 
@@ -126,14 +114,19 @@ function LeyHitreg:CreateMove(cmd)
     end
 
     trace.start = lply:GetShootPos()
-    local dir = cmd:GetViewAngles():Forward()
+    local viewang = cmd:GetViewAngles()
+    local dir = viewang:Forward()
 
-    if (WeaponSpread) then
-        local applied, newDir = self:ApplyBulletSpread(lply, cmd:GetViewAngles():Forward(), WeaponSpread)
+    local weaponSpread = self.WeaponSpreads[wep:GetClass()]
 
+    if (weaponSpread) then
+        local applied, newDir = self:ApplyBulletSpread(lply, dir, weaponSpread)
+ 
         if (applied) then
             dir = newDir
         end
+    else
+        LocalPlayer():ChatPrint("NO WEAPONSPREAD")
     end
 
     trace.endpos = trace.start + (dir * (56756 * 8))
@@ -175,29 +168,35 @@ hook.Add("CreateMove", "LeyHitreg:CreateMove", function(...)
     LeyHitreg:CreateMove(...)
 end)
 
+function LeyHitreg:EntityFireBullets(plyorwep, bullet)
+    local ply, wep = self:GetPlayerFromPlyOrBullet(plyorwep, bullet)
 
-function LeyHitreg:EntityFireBullets(ply, bullet)
-    if (LeyHitreg.Disabled) then
+    if (not ply) then
         return
     end
 
-    local appliedAny, newDir = self:ApplyBulletSpread(ply, bullet.Dir, WeaponSpread)
-    WeaponSpread = bullet.Spread
-    if (WeaponSpread == vector_origin) then
-        WeaponSpread = nil
+    local spreadForce = ply.LeyHitreg_NeedsSpreadForce
+
+    if (spreadForce) then
+        wep = spreadForce
     end
 
-    if (not appliedAny) then
-        return
+    local bulletSpread = LeyHitreg:GetWeaponSpread(ply, wep, bullet)
+    self.WeaponSpreads[wep:GetClass()] = bulletSpread
+
+    if (spreadForce) then
+        return false
     end
 
-    bullet.Spread = vector_origin
-    bullet.Dir = newDir
-    return true
+    local ret = LeyHitreg:SpreadedEntityFireBullets(ply, wep, bullet, bulletSpread)
+
+    if (ret != nil) then
+        return ret
+    end
 end
 
-hook.Add("EntityFireBullets", "LeyHitreg:EntityFireBullets", function(...)
-    local ret = LeyHitreg:EntityFireBullets(...)
+hook.Add("EntityFireBullets", "LeyHitreg:EntityFireBullets", function(plyorwep, bullet)
+    local ret = LeyHitreg:EntityFireBullets(plyorwep, bullet)
 
     if (ret != nil) then
         return ret

@@ -12,6 +12,8 @@ LeyHitreg.NoSpread = false -- debug: enable nospread for everyone
 LeyHitreg.BrokenDefaultSpread = false -- debug: enable broken default spread behaviour, broken because its only applied visually now
 LeyHitreg.LogHitgroupMismatches = false -- debug: log hitgroup mismatches
 LeyHitreg.LogFixedBullets = false -- debug: log the amount of bullets which got hitregged
+LeyHitreg.LogInvalidFOV = false -- debug: log invalid FOV
+LeyHitreg.LogInvalidShots = false -- debug: log the invalid shots
 LeyHitreg.BulletAimbot = false -- debug: set eyeangles to position of bullet
 LeyHitreg.LogTargetBone = false -- debug: log target bone
 LeyHitreg.HitScanDisabled = false -- debug: disable hitscan within bullet cb
@@ -19,24 +21,30 @@ LeyHitreg.BulletOverwriteDisabled = false -- debug: disable hitscan and bullet o
 LeyHitreg.AnnounceClientHits = false -- debug: log when the client sends a hit to server
 LeyHitreg.DisableLagComp = false -- debug: disable sources original lag compensation
 
+if (LeyHitreg.Disabled) then
+    print("[/LeyHitreg/] Disabled")
+    return
+end
+
 LeyHitreg.svfiles = {
-    "leyhitreg/server/receiveshotinfo/receiveshotinfo.lua",
-    "leyhitreg/server/bulletprocessing/processbullet.lua",
     "leyhitreg/server/bulletprocessing/hitscan.lua",
+    "leyhitreg/server/bulletprocessing/processbullet.lua",
     "leyhitreg/server/damageinfo/scaledamagehack.lua",
     "leyhitreg/server/damageinfo/fixscaling.lua",
-    "leyhitreg/server/bulletvalidator/bulletvalidator.lua",
-    "leyhitreg/server/hitscan/hitscan.lua",
+    "leyhitreg/server/receiveshotinfo/receiveshotinfo.lua",
+    "leyhitreg/server/receiveshotinfo/shotvalidator.lua",
 }
 
 LeyHitreg.clfiles = {
     "leyhitreg/client/sendshots/sendshots.lua",
-    "leyhitreg/client/spreadsystem/bulletspread.lua"
+    "leyhitreg/client/sendshots/fetchspreads.lua"
 }
 
 LeyHitreg.sharedfiles = {
+    "leyhitreg/shared/spreadsystem/bulletspread.lua",
+    "leyhitreg/shared/spreadsystem/firebullets.lua",
     "leyhitreg/shared/disablelagcomp/disablelagcomp.lua",
-    "leyhitreg/shared/workarounds/workarounds.lua"
+    "leyhitreg/shared/workarounds/workarounds.lua",
 }
 
 local function includeOnCS(filename)

@@ -6,6 +6,7 @@ local IsValid = IsValid
 local PlyNeedsPrimReset = {}
 
 LeyHitreg.BulletCount = {}
+LeyHitreg.InvalidShots = {}
 
 function LeyHitreg:StartCommand(ply, cmd)
     if (not ply:Alive() or LeyHitreg.Disabled) then
@@ -56,8 +57,16 @@ function LeyHitreg:StartCommand(ply, cmd)
         targetEntIndex = 0
     end
 
-    if (self:IsInvalidShot(ply, cmd, wep, shouldPrimary, target, targetBone)) then
-        return
+    if (target) then
+        if (self:IsInvalidShot(ply, cmd, wep, shouldPrimary, target, targetBone)) then
+            if (self.LogInvalidShots) then
+                ply:ChatPrint("Invalid shot!")
+            end
+
+            LeyHitreg.InvalidShots[ply] = (LeyHitreg.InvalidShots[ply] or 0) + 1
+            return
+        end
+
     end
 
     LeyHitreg:ProcessBullet(ply, cmd, wep, shouldPrimary, target, targetBone)
@@ -66,6 +75,16 @@ end
 timer.Create("LeyHitreg.BulletMax", 0.1, 0, function()
     for k, ply in ipairs(player.GetAll()) do
         LeyHitreg.BulletCount[ply] = 0
+    end
+end)
+
+timer.Create("LeyHitreg.KickInvalidShooters", 30, 0, function()
+    for k, ply in ipairs(player.GetAll()) do
+        if ((LeyHitreg.InvalidShots[ply] or 0) >= 10) then
+            ply:Kick("[/LeyHitreg/] Too many invalid shots!")
+        end
+
+        LeyHitreg.InvalidShots[ply] = 0
     end
 end)
 

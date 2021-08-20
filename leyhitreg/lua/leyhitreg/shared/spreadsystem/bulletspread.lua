@@ -11,12 +11,12 @@ local timefn = function()
 end
 
 function LeyHitreg:ApplyBulletSpread(ply, dir, spread)
-    if (not spread or spread == vector_origin or LeyHitreg.BrokenSpread) then
-        return false
-    end
-
     if (LeyHitreg.NoSpread) then
         return true, dir, vector_origin
+    end
+
+    if (not spread or spread == vector_origin or LeyHitreg.BrokenSpread) then
+        return false
     end
 
     if (isnumber(spread)) then

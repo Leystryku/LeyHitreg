@@ -77,9 +77,15 @@ function LeyHitreg:EntityFireBullets(ply, bullet)
         return
     end
 
-    bullet.Src = ply:GetShootPos()
+    local newshootpos = ply:GetShootPos()
     local newdir = (targetpos - bullet.Src)
+
+    LeyHitreg:HitScanBullet(ply, target, bullet, shot, shot.targetBone, shot.targetHitGroup, newshootpos)
+
+    bullet.Src = newshootpos
     bullet.Dir = newdir
+
+
     self.ScaleDamageBlockEntity[ply] = true
 
     ply.LeyHitReg_ShouldHit = shot.targetHitGroup

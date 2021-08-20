@@ -14,14 +14,19 @@ LeyHitreg.LogHitgroupMismatches = false -- debug: log hitgroup mismatches
 LeyHitreg.LogFixedBullets = false -- debug: log the amount of bullets which got hitregged
 LeyHitreg.BulletAimbot = false -- debug: set eyeangles to position of bullet
 LeyHitreg.LogTargetBone = false -- debug: log target bone
+LeyHitreg.HitScanDisabled = false -- debug: disable hitscan within bullet cb
+LeyHitreg.BulletOverwriteDisabled = false -- debug: disable hitscan and bullet overwrite
 LeyHitreg.AnnounceClientHits = false -- debug: log when the client sends a hit to server
 LeyHitreg.DisableLagComp = false -- debug: disable sources original lag compensation
 
 LeyHitreg.svfiles = {
     "leyhitreg/server/receiveshotinfo/receiveshotinfo.lua",
-    "leyhitreg/server/processbullet/processbullet.lua",
+    "leyhitreg/server/bulletprocessing/processbullet.lua",
+    "leyhitreg/server/bulletprocessing/hitscan.lua",
     "leyhitreg/server/damageinfo/scaledamagehack.lua",
     "leyhitreg/server/damageinfo/fixscaling.lua",
+    "leyhitreg/server/bulletvalidator/bulletvalidator.lua",
+    "leyhitreg/server/hitscan/hitscan.lua",
 }
 
 LeyHitreg.clfiles = {

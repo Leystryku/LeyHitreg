@@ -18,6 +18,16 @@ function LeyHitreg:StartCommand(ply, cmd)
         return
     end
 
+    local targetEntIndex = cmd:GetUpMove()
+    local targetBone = cmd:GetMouseWheel()
+
+    cmd:SetUpMove(0)
+    cmd:SetMouseWheel(0)
+
+    if (targetBone > 0xFF) then
+        return
+    end
+
     local wep = ply:GetActiveWeapon()
 
     if (not IsValid(wep)) then
@@ -28,13 +38,12 @@ function LeyHitreg:StartCommand(ply, cmd)
         return
     end
 
-    LeyHitreg.BulletCount[ply] = (LeyHitreg.BulletCount[ply] or 0) + 1
-
     if (LeyHitreg.BulletCount[ply] > 50) then
         return
     end
 
-    local targetEntIndex = cmd:GetUpMove()
+    LeyHitreg.BulletCount[ply] = (LeyHitreg.BulletCount[ply] or 0) + 1
+
     local target
 
     if (targetEntIndex and targetEntIndex > 0) then
@@ -47,11 +56,7 @@ function LeyHitreg:StartCommand(ply, cmd)
         targetEntIndex = 0
     end
 
-    local targetBone = cmd:GetMouseWheel()
-    cmd:SetUpMove(0)
-    cmd:SetMouseWheel(0)
-
-    if (targetBone > 0xFF) then
+    if (self:IsInvalidShot(ply, cmd, wep, shouldPrimary, target, targetBone)) then
         return
     end
 

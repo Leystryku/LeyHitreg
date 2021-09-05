@@ -59,6 +59,7 @@ LeyHitreg.sharedfiles = {
     "leyhitreg/shared/spreadsystem/firebullets.lua",
     "leyhitreg/shared/disablelagcomp/disablelagcomp.lua",
     "leyhitreg/shared/workarounds/workarounds.lua",
+    "leyhitreg/shared/workarounds/swepbases.lua"
 }
 
 local function includeOnCS(filename)

@@ -56,7 +56,7 @@ end
 local NeedsPrimReset = false
 
 function LeyHitreg:CreateMove(cmd)
-    if (not lply or LeyHitreg.Disabled) then
+    if (not lply or LeyHitreg.Disabled or LeyHitreg.DisabledOnlyOnClient) then
         return
     end
 
@@ -169,10 +169,18 @@ hook.Add("CreateMove", "LeyHitreg:CreateMove", function(...)
 end)
 
 function LeyHitreg:EntityFireBullets(plyorwep, bullet)
+    if (LeyHitreg.Disabled or LeyHitreg.DisabledOnlyOnClient) then
+        return
+    end
+
     local ply, wep = self:GetPlayerFromPlyOrBullet(plyorwep, bullet)
 
     if (not ply) then
         return
+    end
+
+    if (not LeyHitreg.ShotDirForceDisabled) then
+        bullet.Dir = ply:GetAimVector()
     end
 
     local spreadForce = ply.LeyHitreg_NeedsSpreadForce

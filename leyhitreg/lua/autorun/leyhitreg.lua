@@ -5,10 +5,24 @@ end
 print("[/LeyHitreg/] Loading...")
 LeyHitreg = LeyHitreg or {}
 
--- don't touch anything. no config. no, leave it. thanks.
+
+-- ShotDirForceDisabled allows is for testing with bullet dirs to test how problematic some swep bases are
+-- if this alleviates issues, then you need to disable bullet penetration etc in your swep base
+LeyHitreg.ShotDirForceDisabled = false
+
+
+
+
+
+
+
+-- don't touch anything below this. no config. no, leave it. thanks.
 
 LeyHitreg.Disabled = false -- debug: disable addon
-LeyHitreg.NoSpread = true -- debug: enable nospread for everyone
+LeyHitreg.DisabledOnlyOnClient = false -- debug: disable only on cl
+LeyHitreg.NoSpread = false -- debug: enable nospread for everyone
+LeyHitreg.ShowActualShotHit = false -- debug: show where the shot actually landed on the sv without spread
+LeyHitreg.ShowActualShotSpreadedHit = false -- debug: show where the shot actually landed on the sv with spread
 LeyHitreg.BrokenDefaultSpread = false -- debug: enable broken default spread behaviour, broken because its only applied visually now
 LeyHitreg.LogHitgroupMismatches = false -- debug: log hitgroup mismatches
 LeyHitreg.LogFixedBullets = false -- debug: log the amount of bullets which got hitregged

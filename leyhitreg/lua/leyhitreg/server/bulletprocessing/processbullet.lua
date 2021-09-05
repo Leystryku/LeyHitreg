@@ -46,17 +46,38 @@ local spread = vector_origin
 
 function LeyHitreg:FallbackEntityFireBullets(ply, wep, bullet)
     local ret = LeyHitreg:SpreadedEntityFireBullets(ply, wep, bullet)
-
+    if (LeyHitreg.ShowActualShotSpreadedHit) then
+        LeyHitreg:DebugShowActualShotHit(bullet)
+    end
     if (ret != nil) then
         return ret
     end
 end
 
+function LeyHitreg:DebugShowActualShotHit(bullet)
+
+    local ocb = bullet.Callback or function() end
+
+    bullet.Callback = function(atk, tr, dmginfo, ...)
+        util.Decal("Eye", tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
+        return ocb(atk, tr, dmginfo, ...)
+    end
+
+end
+
 function LeyHitreg:EntityFireBullets(plyorwep, bullet)
+    if (LeyHitreg.ShowActualShotHit) then
+        LeyHitreg:DebugShowActualShotHit(bullet)
+    end
+
     local ply, wep = self:GetPlayerFromPlyOrBullet(plyorwep, bullet)
 
     if (not ply) then
         return
+    end
+
+    if (not LeyHitreg.ShotDirForceDisabled) then
+        bullet.Dir = ply:GetAimVector()
     end
 
     local hitTable = LeyHitreg.ForceHit[ply]

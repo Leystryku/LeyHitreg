@@ -110,8 +110,8 @@ function LeyHitreg:AbsorbScaleDamageHooks()
 
     local allHooks = hook.GetTable()
 
-    local scalePlayers = allHooks["ScalePlayerDamage"]
-    local scaleNPCs = allHooks["ScaleNPCDamage"]
+    local scalePlayers = allHooks["ScalePlayerDamage"] or {}
+    local scaleNPCs = allHooks["ScaleNPCDamage"] or {}
 
     for k,v in pairs(scalePlayers) do
         hook.Remove("ScalePlayerDamage", k)

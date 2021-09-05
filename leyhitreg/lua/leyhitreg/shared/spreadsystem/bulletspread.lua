@@ -25,7 +25,7 @@ function LeyHitreg:ApplyBulletSpread(ply, dir, spread)
 
     local add = (8969 * timefn())
     
-    mathrandomseed(add)
+    mathrandomseed(add + CurTime())
 
     local rnda, rndb, rndc = mathrandom(), mathrandom(), mathrandom()
 

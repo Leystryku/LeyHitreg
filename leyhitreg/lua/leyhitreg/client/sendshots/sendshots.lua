@@ -126,7 +126,7 @@ function LeyHitreg:CreateMove(cmd)
             dir = newDir
         end
     else
-        LocalPlayer():ChatPrint("NO WEAPONSPREAD")
+        -- LocalPlayer():ChatPrint("NO WEAPONSPREAD")
     end
 
     trace.endpos = trace.start + (dir * (56756 * 8))

@@ -26,7 +26,7 @@ function LeyHitreg:IsIgnoreWep(wep)
     end
 
     -- Ignore shotguns
-    if (wep.Shotgun or wep.IsShotgun or wep.ShotGun or wep.Primary and wep.Primary.NumShots > 1) then
+    if (wep.Shotgun or wep.IsShotgun or wep.ShotGun or wep.Primary and wep.Primary.NumShots and wep.Primary.NumShots > 1) then
         return true
     end
 

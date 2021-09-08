@@ -72,7 +72,11 @@ function LeyHitreg:EntityFireBullets(plyorwep, bullet)
 
     local ply, wep = self:GetPlayerFromPlyOrBullet(plyorwep, bullet)
 
-    if (not ply) then
+    if (not ply or not wep) then
+        return
+    end
+    
+    if (self:IsIgnoreWep(wep)) then
         return
     end
 

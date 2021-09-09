@@ -7,6 +7,11 @@ HL2Ignore["gmod_camera"] = true
 HL2Ignore["gmod_tool"] = true
 HL2Ignore["weapon_physcannon"] = true
 
+local MeleeHoldType = {}
+MeleeHoldType["knife"] = true
+MeleeHoldType["melee"] = true
+MeleeHoldType["melee2"] = true
+
 local ExtraIgnores = {}
 
 function LeyHitreg:IsIgnoreWep(wep)
@@ -21,7 +26,7 @@ function LeyHitreg:IsIgnoreWep(wep)
     -- This gets rid of all melees, but might  also get rid of some non-melees with inf ammo
     -- maybe even some limited action melees
     -- but, gonna fix conflicts as they arise
-    if (wep.IsMelee or wep.Melee or wep:Clip1() < 0) then
+    if (wep.IsMelee or wep.Melee or wep:Clip1() < 0 or wep.GetHoldType and wep:GetHoldType() and MeleeHoldType[wep:GetHoldType()]) then
         return true
     end
 

@@ -179,6 +179,10 @@ function LeyHitreg:EntityFireBullets(plyorwep, bullet)
         return
     end
 
+    if (not wep or self:IsIgnoreWep(wep)) then
+        return
+    end
+
     if (not LeyHitreg.ShotDirForceDisabled) then
         bullet.Dir = ply:GetAimVector()
     end

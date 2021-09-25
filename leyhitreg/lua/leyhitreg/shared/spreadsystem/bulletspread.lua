@@ -7,7 +7,7 @@ local isnumber = isnumber
 local vector_origin = vector_origin
 
 local timefn = function()
-    return os.date("%S")
+    return 1 -- os.date("%S")
 end
 
 function LeyHitreg:ApplyBulletSpread(ply, dir, spread)

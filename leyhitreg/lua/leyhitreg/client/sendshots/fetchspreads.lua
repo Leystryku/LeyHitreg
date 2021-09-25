@@ -60,17 +60,34 @@ function LeyHitreg:EntityEmitSoundSpreadPrefire(data)
     end
 
 
-    if (ent:IsPlayer() and ent.LeyHitreg_NeedsSpreadForce) then
-        return false
+    if (ent:IsPlayer()) then
+        if (ent.LeyHitreg_NeedsSpreadForce) then
+            return false
+        end
+        local wep = ent:GetActiveWeapon()
+        
+        if (not IsValid(wep)) then
+            return
+        end
+
+        if (wep.LeyHitreg_NeedsSpreadForce) then
+            return false
+        end
+
+        return
     end
 
     if (not ent:IsWeapon()) then
         return
     end
 
-    local ply = wep:GetOwner()
+    local ply = ent:GetOwner()
 
     if (IsValid(ply) and ply:IsPlayer() and ply.LeyHitreg_NeedsSpreadForce) then
+        return false
+    end
+    
+    if (ent.LeyHitreg_NeedsSpreadForce) then
         return false
     end
 end

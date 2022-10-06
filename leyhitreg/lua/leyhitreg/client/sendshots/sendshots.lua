@@ -63,7 +63,7 @@ function LeyHitreg:CreateMove(cmd)
     local spreadWep = lply.LeyHitreg_NeedsSpreadForce
 
     if (spreadWep and IsValid(spreadWep)) then
-        spreadWep:SetClip1(99999)
+        LeyHitreg:SetFittingValidClip(spreadWep)
     end
 
     if (cmd:CommandNumber() == 0) then
@@ -117,7 +117,7 @@ function LeyHitreg:CreateMove(cmd)
     local viewang = cmd:GetViewAngles()
     local dir = viewang:Forward()
 
-    local weaponSpread = self.WeaponSpreads[wep:GetClass()]
+    local weaponSpread = self:GetWeaponSpread(lply, wep)
 
     if (weaponSpread) then
         local applied, newDir = self:ApplyBulletSpread(lply, dir, weaponSpread)
@@ -179,25 +179,18 @@ function LeyHitreg:EntityFireBullets(plyorwep, bullet)
         return
     end
 
-    if (not wep or self:IsIgnoreWep(wep)) then
-        return
-    end
-
     if (not LeyHitreg.ShotDirForceDisabled) then
         bullet.Dir = ply:GetAimVector()
     end
 
-    local spreadForce = ply.LeyHitreg_NeedsSpreadForce
+    local forcedShot = LeyHitreg:FetchSpreadFireBullets(ply, wep, bullet)
 
-    if (spreadForce) then
-        wep = spreadForce
+    if (forcedShot != nil) then
+        return forcedShot
     end
 
-    local bulletSpread = LeyHitreg:GetWeaponSpread(ply, wep, bullet)
-    self.WeaponSpreads[wep:GetClass()] = bulletSpread
-
-    if (spreadForce) then
-        return false
+    if (not wep or self:IsIgnoreWep(wep)) then
+        return
     end
 
     local ret = LeyHitreg:SpreadedEntityFireBullets(ply, wep, bullet, bulletSpread)

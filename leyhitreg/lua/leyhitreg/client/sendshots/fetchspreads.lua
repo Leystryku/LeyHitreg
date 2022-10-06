@@ -1,5 +1,7 @@
 LeyHitreg.WeaponSpreads = {}
 
+local vector_origin = vector_origin
+
 function LeyHitreg:PlayerSwitchWeapon(ply, oldWep, newWep) 
     if (not IsValid(newWep)) then
         return
@@ -11,8 +13,6 @@ function LeyHitreg:PlayerSwitchWeapon(ply, oldWep, newWep)
         return
     end
 
-    local classname = newWep:GetClass()
-
     if (self:IsIgnoreWep(newWep)) then
         self.WeaponSpreads[classname] = vector_origin
         return
@@ -20,8 +20,8 @@ function LeyHitreg:PlayerSwitchWeapon(ply, oldWep, newWep)
 
     ply.LeyHitreg_NeedsSpreadForce = newWep
 
-    timer.Simple(0.1, function()
-        if (not IsValid(ply)) then
+    timer.Simple(1, function() 
+        if (not IsValid(ply) or not IsValid(newWep)) then
             return
         end
 
@@ -34,7 +34,7 @@ function LeyHitreg:PlayerSwitchWeapon(ply, oldWep, newWep)
         LeyHitreg.WeaponSpreads[classname] = LeyHitreg.WeaponSpreads[classname] or vector_origin
     end)
 
-    newWep:SetClip1(9999)
+    LeyHitreg:SetFittingValidClip(newWep)
 
     if (newWep.PrimaryAttack) then
         newWep:PrimaryAttack()
@@ -44,9 +44,44 @@ function LeyHitreg:PlayerSwitchWeapon(ply, oldWep, newWep)
 end
 
 hook.Add("PlayerSwitchWeapon", "LeyHitreg:PlayerSwitchWeapon", function(...)
-    LeyHitreg:PlayerSwitchWeapon(...)
+    -- process switch at next frame so FireBullets uses proper wep
+    local t = {...}
+
+    timer.Simple(0, function()
+        LeyHitreg:PlayerSwitchWeapon(unpack(t))
+    end)
 end)
 
+function LeyHitreg:FetchSpreadFireBullets(ply, wep, bullet)
+    local spreadForceWep = ply.LeyHitreg_NeedsSpreadForce
+    local validSpreadForceWep = spreadForceWep != nil and IsValid(spreadForceWep)
+
+    -- if (validSpreadForceWep) then
+    --    wep = spreadForceWep
+    -- end
+
+    local weaponSpread = LeyHitreg:GetWeaponSpread(ply, wep, bullet)
+    self.WeaponSpreads[wep:GetClass()] = weaponSpread
+
+    if (validSpreadForceWep and wep == spreadForceWep) then
+        bullet.Damage = 1
+        bullet.Distance = 1
+        bullet.Src = Vector(-100000, -10000, -10000)
+        bullet.Dir = vector_origin
+ 
+        timer.Simple(0, function()
+            if (not IsValid(ply)) then
+                return
+            end
+
+            if (ply.LeyHitreg_NeedsSpreadForce == wep) then
+                ply.LeyHitreg_NeedsSpreadForce = nil
+            end
+        end)
+
+        return bullet
+    end
+end
 
 function LeyHitreg:EntityEmitSoundSpreadPrefire(data)
     if (not data) then
@@ -64,6 +99,7 @@ function LeyHitreg:EntityEmitSoundSpreadPrefire(data)
         if (ent.LeyHitreg_NeedsSpreadForce) then
             return false
         end
+
         local wep = ent:GetActiveWeapon()
         
         if (not IsValid(wep)) then

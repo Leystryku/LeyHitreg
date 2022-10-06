@@ -108,10 +108,26 @@ end
 
 local vector_origin = vector_origin
 function LeyHitreg:GetWeaponSpread(ply, wep, bullet)
-    local bulletSpread = bullet.Spread
+    -- MW Swep pack workaround
+    if (wep.CalculateCone) then
+        return wep:CalculateCone() * 0.1 * 0.7
+    end
 
-    if (bulletSpread and bulletSpread != vector_origin) then
-        return bulletSpread
+    -- TFA workaround
+    if (wep.CalculateConeRecoil) then
+        return wep:CalculateConeRecoil()
+    end
+
+    if (bullet) then
+        local bulletSpread = bullet.Spread
+
+        if (bulletSpread and bulletSpread != vector_origin) then
+            return bulletSpread
+        end
+    end
+
+    if (self.WeaponSpreads and self.WeaponSpreads[wep:GetClass()]) then
+        return self.WeaponSpreads[wep:GetClass()]
     end
 
     if (wep.PrimarySpread) then
@@ -135,4 +151,21 @@ function LeyHitreg:GetWeaponSpread(ply, wep, bullet)
     end
 
     return vector_origin
+end
+
+function LeyHitreg:SetFittingValidClip(wep)
+    local clip1 = wep:Clip1()
+
+    if (clip1 == -1 or clip1 > 0) then
+        return
+    end
+
+    local max = wep:GetMaxClip1()
+
+    if (max > 0) then
+        wep:SetClip1(max)
+        return
+    end
+
+    wep:SetClip1(30)
 end

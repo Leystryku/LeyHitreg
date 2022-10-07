@@ -49,10 +49,9 @@ function LeyHitreg:IsSpreadNotApplied(ply, cmd, wep, shouldPrimary)
     return false
 end
 
-local disableSecurityChecks = false -- this is here instead of in the main startup file to avoid stupid people from doing stupid things
 function LeyHitreg:IsInvalidShot(ply, cmd, wep, shouldPrimary, target, targetBone)
-    if (disableSecurityChecks) then
-        return
+    if (LeyHitreg.DisableSecurityChecks) then
+        return false
     end
 
     local plyang = cmd:GetViewAngles()
@@ -63,6 +62,7 @@ function LeyHitreg:IsInvalidShot(ply, cmd, wep, shouldPrimary, target, targetBon
     if (self:IsInvalidShotOutOfFOV(ply, plyang, plypos, tarpos, distsqr)) then
         return true
     end
+
 
     if (self:IsSpreadNotApplied(ply, cmd, wep, shouldPrimary)) then
         return true

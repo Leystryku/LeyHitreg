@@ -65,7 +65,91 @@ function LeyHitreg:DebugShowActualShotHit(bullet)
 
 end
 
+function LeyHitreg:EntityTakeDamage(ent, dmg)
+    if (not IsValid(ent)) then
+        return
+    end
+
+    if (not ent.IsNPC or not ent.IsPlayer) then
+        return
+    end
+
+    if (not ent:IsNPC() and not ent:IsPlayer()) then
+        return
+    end
+
+    local atk = dmg:GetAttacker()
+    
+    if (not IsValid(atk)) then
+        return
+    end
+
+    if (atk.LeyHitreg_CurrentBullet) then
+        atk.LeyHitreg_CurrentBullet = nil
+        atk.LeyHitreg_LastShotMissed = nil
+    end
+end
+
+hook.Add("EntityTakeDamage","LeyHitreg:EntityTakeDamage", function(ent, dmg)
+    local ret = LeyHitreg:EntityTakeDamage(ent, dmg)
+
+    if (ret != nil) then
+        return ret
+    end
+end)
+
+local tickCount = engine.TickCount
+function LeyHitreg:PlayerTick(ply)
+    if (ply.LeyHitreg_CurrentBullet) then
+        local curTick = tickCount()
+        ply.LeyHitreg_CurrentBullet = nil
+        ply.LeyHitreg_LastShotMissed = curTick
+
+        local hitTable = LeyHitreg.ForceHit[ply]
+
+        if (not hitTable) then
+            return
+        end
+
+        local shot = nil
+        local bestDelta = nil
+
+        for k,v in ipairs(hitTable) do
+            local delta = curTick - v.tickCount
+            if (delta >= 0) then
+                if (not bestDelta or bestDelta > delta) then
+                    bestDelta = delta
+                    shot = v
+                end
+            end
+        end
+
+        if (not shot) then
+            return
+        end
+
+        if (bestDelta > 6) then -- Ideally I'd probably assume it's the same tick
+            return
+        end
+
+        ply.LeyHitreg_LastBulletEnt:FireBullets(ply.LeyHitreg_LastBullet)
+    end
+end
+
+hook.Add("PlayerTick", "LeyHitreg:PlayerTick", function(ply)
+    LeyHitreg:PlayerTick(ply)
+end)
+
 function LeyHitreg:EntityFireBullets(plyorwep, bullet)
+    local ocb = bullet.Callback or function() end
+
+    bullet.Callback = function(atk, tr, dmginfo, ...)
+        atk.LeyHitreg_CurrentBullet = true
+        atk.LeyHitreg_LastBullet = table.Copy(bullet)
+        atk.LeyHitreg_LastBulletEnt = plyorwep
+        return ocb(atk, tr, dmginfo, ...)
+    end
+
     if (LeyHitreg.ShowActualShotHit) then
         LeyHitreg:DebugShowActualShotHit(bullet)
     end
@@ -98,7 +182,6 @@ function LeyHitreg:EntityFireBullets(plyorwep, bullet)
 
     tableremove(hitTable, 1)
     local target = shot.target
-
 
 
     -- print(canSee)
@@ -135,7 +218,9 @@ function LeyHitreg:EntityFireBullets(plyorwep, bullet)
     end
 
     if (LeyHitreg.BulletAimbot) then
-        ply:SetEyeAngles(newdir:Angle())
+        timer.Simple(0, function()
+            ply:SetEyeAngles(newdir:Angle())
+        end)
     end
 
     if (LeyHitreg.LogTargetBone) then
@@ -162,26 +247,32 @@ function LeyHitreg:InsertPlayerData(ply, cmd, wep, shouldPrimary, target, target
         ["aimVec"] = ply:GetAimVector(),
         ["shootPos"] = ply:GetPos(),
         ["weapon"] = wep,
-        ["expireTime"] = CurTime() + 0.8
+        ["expireTime"] = CurTime() + 0.8,
+        ["tickCount"] = engine.TickCount()
     })
 end
 
 function LeyHitreg:CanPrimaryAttack(wep)
+    local ply = wep:GetOwner()
     if (wep:Clip1() == 0) then
         return false
     end
 
-    if (wep.CanPrimaryAttack and not wep:CanPrimaryAttack()) then
-        return false
-    else
-        local nextPrim = wep:GetNextPrimaryFire()
-
-        if (wep.LastNextPrim and wep.LastNextPrim == nextPrim) then
+    if (not self.IgnoreCanNextPrimaryAttack and wep.CanPrimaryAttack) then
+        if (not wep:CanPrimaryAttack()) then
             return false
         end
 
-        wep.LastNextPrim = nextPrim
+        return true
     end
+
+    local nextPrim = wep:GetNextPrimaryFire()
+
+    if (wep.LastNextPrim and wep.LastNextPrim == nextPrim) then
+        return false
+    end
+
+    wep.LastNextPrim = nextPrim
 
     return true
 end

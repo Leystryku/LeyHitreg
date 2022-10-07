@@ -107,6 +107,7 @@ function LeyHitreg:GetPlayerFromPlyOrBullet(plyorwep, bullet)
 end
 
 local vector_origin = vector_origin
+
 function LeyHitreg:GetWeaponSpread(ply, wep, bullet)
     -- MW Swep pack workaround
     if (wep.CalculateCone) then
@@ -116,6 +117,18 @@ function LeyHitreg:GetWeaponSpread(ply, wep, bullet)
     -- TFA workaround
     if (wep.CalculateConeRecoil) then
         return wep:CalculateConeRecoil()
+    end
+
+    -- ARCCW workaround
+    if (wep.GetBuff and wep.ApplyRandomSpread and wep.TryBustDoor and ArcCW) then
+        return ArcCW.MOAToAcc * wep:GetBuff("AccuracyMOA") * 4.5
+    end
+
+
+    -- CW2 workaround
+
+    if (wep.AimSpread and wep.recalculateAimSpread and wep.getBaseCone) then
+        return wep:getBaseCone()
     end
 
     if (bullet) then

@@ -9,8 +9,8 @@ LeyHitreg = LeyHitreg or {}
 -- ShotDirForceDisabled allows is for testing with bullet dirs to test how problematic some swep bases are
 -- if this alleviates issues, then you need to disable bullet penetration etc in your swep base
 LeyHitreg.ShotDirForceDisabled = false
-
-
+LeyHitreg.DisableSecurityChecks = false
+LeyHitreg.IgnoreCanNextPrimaryAttack = true
 
 
 

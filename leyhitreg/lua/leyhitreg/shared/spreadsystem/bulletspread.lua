@@ -11,27 +11,40 @@ local timefn = function()
 end
 
 function LeyHitreg:ApplyBulletSpread(ply, dir, spread)
-    if (LeyHitreg.NoSpread) then
-        return true, dir, vector_origin
-    end
+	if (LeyHitreg.NoSpread) then
+		return true, dir, vector_origin
+	end
 
-    if (not spread or spread == vector_origin or LeyHitreg.BrokenSpread) then
-        return false
-    end
+	if (not spread or spread == vector_origin or LeyHitreg.BrokenSpread) then
+		return false
+	end
 
-    if (isnumber(spread)) then
-        spread = Vector(spread, spread, spread)
-    end
+	if (isnumber(spread)) then
+		spread = Vector(spread, spread, spread)
+	end
 
-    local add = (8969 * timefn())
-    
-    mathrandomseed(add + CurTime())
+	local add = (8969 * timefn())
 
-    local rnda, rndb, rndc = mathrandom(), mathrandom(), mathrandom()
+	mathrandomseed(add + CurTime())
 
+	local ang = dir:Angle()
 
-    local appliedSpread = Vector(spread.x * (rnda * 2 - 1), spread.y * (rndb * 2 - 1), spread.z * (rndc * 2 - 1))
-    dir = dir + appliedSpread
+	local appliedSpread, rgt, up = Vector(), ang:Right(), ang:Up()
 
-    return true, dir, appliedSpread
+	local x, y, z
+
+	repeat
+		x = mathrandom() + mathrandom() - 1
+		y = mathrandom() + mathrandom() - 1
+
+		z = x * x + y * y
+	until z <= 1
+
+	for i = 1, 3 do
+		appliedSpread[i] = x * spread.x * rgt[i] + y * spread.y * up[i]
+	end
+
+	dir = dir + appliedSpread
+
+	return true, dir, appliedSpread
 end

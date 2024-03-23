@@ -6,6 +6,7 @@ HL2Ignore["weapon_rpg"] = true
 HL2Ignore["gmod_camera"] = true
 HL2Ignore["gmod_tool"] = true
 HL2Ignore["weapon_physcannon"] = true
+HL2Ignore["weapon_shotgun"] = true
 
 local MeleeHoldType = {}
 MeleeHoldType["knife"] = true
@@ -38,7 +39,7 @@ function LeyHitreg:IsIgnoreWep(wep)
     end
 
     -- Ignore shotguns
-    if (wep.Shotgun or wep.IsShotgun or wep.ShotGun or wep.Primary and wep.Primary.NumShots and wep.Primary.NumShots > 1) then
+    if (wep.Shotgun or wep.IsShotgun or wep.ShotgunReload or wep.ShotGun or wep.Primary and wep.Primary.NumShots and wep.Primary.NumShots > 1) then
         return true
     end
 

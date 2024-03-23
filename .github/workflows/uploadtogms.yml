@@ -48,9 +48,9 @@ jobs:
         cp -rf leyhitreg/* .
 
     - name: Upload
-      uses: JoshPiper/GModStore-Deployment@v0.6.2
+      uses: JoshPiper/GModStore-Deployment@v1.0.0
       with:
-        addon: 5340
+        product: 6c5e862b-3dcf-4769-aa6b-8a001937c56b
         token: ${{ secrets.GMS_token }}
         version: ${{ github.event.inputs.version }}
         changelog: ${{ github.event.inputs.changelog }}

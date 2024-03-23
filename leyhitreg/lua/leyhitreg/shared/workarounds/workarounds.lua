@@ -42,6 +42,26 @@ function LeyHitreg:IsIgnoreWep(wep)
     if (wep.Shotgun or wep.IsShotgun or wep.ShotgunReload or wep.ShotGun or wep.Primary and wep.Primary.NumShots and wep.Primary.NumShots > 1) then
         return true
     end
+    -- Ignore modern day SWEP creators who are too busy reinventing the wheel to add a single wep.IsShotgun variable
+    if (wep.ShotgunEmptyAnim or wep.ShotgunStartAnimShell) then
+        return true
+    end
+
+    if (wep.Category and string.find(string.lower(wep.Category), "shotgun", 1, true)) then
+        return true
+    end
+
+    if (wep.Purpose and string.find(string.lower(wep.Purpose), "shotgun", 1, true)) then
+        return true
+    end
+
+    if (wep.PrintName and string.find(string.lower(wep.PrintName), "shotgun", 1, true)) then
+        return true
+    end
+
+    if (ACT3_CAT_SHOTGUN and wep.ACT3Cat and wep.ACT3Cat == ACT3_CAT_SHOTGUN) then
+        return true
+    end
 
     return false
 end

@@ -50,7 +50,7 @@ jobs:
     - name: Upload
       uses: JoshPiper/GModStore-Deployment@v1.0.0
       with:
-        product: 6c5e862b-3dcf-4769-aa6b-8a001937c56b
+        product: 244bfe2d-f39e-4adc-86eb-d4b7cbb1af2f
         token: ${{ secrets.GMS_token }}
         version: ${{ github.event.inputs.version }}
         changelog: ${{ github.event.inputs.changelog }}

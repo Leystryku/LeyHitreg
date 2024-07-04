@@ -193,7 +193,7 @@ function LeyHitreg:EntityFireBullets(plyorwep, bullet)
         return
     end
 
-    local ret = LeyHitreg:SpreadedEntityFireBullets(ply, wep, bullet, bulletSpread)
+    local ret = LeyHitreg:SpreadedEntityFireBullets(ply, wep, bullet)
 
     if (ret != nil) then
         return ret

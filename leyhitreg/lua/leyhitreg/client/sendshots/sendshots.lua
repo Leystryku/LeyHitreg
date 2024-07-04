@@ -173,9 +173,17 @@ function LeyHitreg:EntityFireBullets(plyorwep, bullet)
         return
     end
 
+    if (bullet.Num >= 2) then
+        return
+    end
+
     local ply, wep = self:GetPlayerFromPlyOrBullet(plyorwep, bullet)
 
     if (not ply) then
+        return
+    end
+
+    if (not wep or self:IsIgnoreWep(wep)) then
         return
     end
 
@@ -187,10 +195,6 @@ function LeyHitreg:EntityFireBullets(plyorwep, bullet)
 
     if (forcedShot != nil) then
         return forcedShot
-    end
-
-    if (not wep or self:IsIgnoreWep(wep)) then
-        return
     end
 
     local ret = LeyHitreg:SpreadedEntityFireBullets(ply, wep, bullet)

@@ -39,11 +39,17 @@ You are welcome to contribute. If you feel there is any feature missing, or some
 - - e.g. LeyHitreg.Disabled = true/false or LeyHitreg.
 - The addon contains various hooks, for extension
 - - e.g. LeyHitreg.OnBulletCallback
- 
 ### Debugging HitRegistration
 The file lua/autorun/leyhitreg.lua contains various debugging flags.
 These can be used to debug both - the games hitreg with the addon, and the games hitreg with it disabled.
 It can report things such as the hitgroups mismatching on the serverside and clientside or affect behaviour, e.g. toggling off spread applications.
 Example setting:
 LeyHitreg.NoSpread = false -- debug: enable nospread for everyone
+### CI/CD
+Currently the addon contains a CI/CD Pipeline which:
 
+- CI: Verifies the syntactic correctness of the lua code
+- CI: Performs automatic linting for the lua code
+- CD: Pushes the lua code to gmodstore.com
+
+Ideally it should be changed to zip the addons source code, and publish the release to steam workshop and github releases.

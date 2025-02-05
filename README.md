@@ -1,11 +1,10 @@
 # LeyHitreg
 A GMod Hit-Registration addon from 2017
 
-## Banner
 ![Banner Image](assets/banner.jpg)
 
 ## Debugging Hit-Registration
-The initialization file leyhitreg/lua/autorun/leyhitreg.lua contains variables to allow you to debug the hit registration of the game with the addon.
+The initialization file leyhitreg/lua/autorun/leyhitreg.lua contains variables to allow you to debug the hit registration behaviour with the addon.
 
 ## Contribution
 Feel free to contribute.
@@ -22,3 +21,29 @@ In addition, the addon uses the same way of networking as for the source engines
 ## Example
 https://www.youtube.com/watch?v=dUQe6RRDp3A
 In the aforementioned video example, source out of box fails to register hits which arrive on the models feet. With LeyHitreg, those hits register.
+
+## For DEVs:
+You are welcome to contribute. If you feel there is any feature missing, or something else you think this addon needs, you can open a pull request.
+
+### File structure
+- Initialization happens in lua/autorun/leyhitreg.lua
+- The code is split between the different realms
+- - lua/leyhitreg/client
+  - lua/leyhitreg/shared
+  - lua/leyhitreg/server
+ - For each realm, modules exist, e.g. to fix CTakeDamageInfo related functionality
+ - -  lua/leyhitreg/server/damageinfo/fixcsaling.lua
+   -  lua/leyhitreg/server/damageinfo/scaledamagehack.lua
+### API
+- All functionality is exposed under the LeyHitreg table, allowing full overwriting of default behaviour
+- - e.g. LeyHitreg.Disabled = true/false or LeyHitreg.
+- The addon contains various hooks, for extension
+- - e.g. LeyHitreg.OnBulletCallback
+ 
+### Debugging HitRegistration
+The file lua/autorun/leyhitreg.lua contains various debugging flags.
+These can be used to debug both - the games hitreg with the addon, and the games hitreg with it disabled.
+It can report things such as the hitgroups mismatching on the serverside and clientside or affect behaviour, e.g. toggling off spread applications.
+Example setting:
+LeyHitreg.NoSpread = false -- debug: enable nospread for everyone
+

@@ -1,5 +1,5 @@
 # LeyHitreg
-A GMod Hit-Registration addon from 2017
+A GMod Hit-Registration addon from 2017, release builds available at https://steamcommunity.com/sharedfiles/filedetails/?id=3421440369
 
 ![Banner Image](assets/banner.jpg)
 
